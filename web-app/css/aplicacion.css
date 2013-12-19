@@ -81,6 +81,10 @@ body {
 .pregunta{
     font-size: 16px;
 }
+.submit{
+    cursor: pointer;
+    padding:8px;
+}
 
 .fila{
     width: 300px;    

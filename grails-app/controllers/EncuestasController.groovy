@@ -41,8 +41,14 @@ class EncuestasController {
                 flow.fecha=new Date().format("MM/dd/yyyy hh:mm:ss")
                 if(!session.esAdmin)
                     flow.condicion=" encu.prsncdla='${flow.cedula}' "
-                else
-                    flow.condicion=" encu.admncdla='${flow.cedula}' "
+                else{
+                    if(!session.esPar)
+                        flow.condicion=" encu.admncdla='${flow.cedula}' "
+                    else{
+                        flow.condicion=" encu.prof_par='${flow.cedula}' "
+                    }
+                }
+
                 flow.rp=[]
                 flow.mat=[:]
                 flow.listaAdm=[]
@@ -72,12 +78,18 @@ class EncuestasController {
                 /****************************************************************ENCUCDGO****************************************************************************/
                 if(session.modulo=="prof"){
                     if(session.tipoPersona!="P")  {
-                        if(flow.tipo=="FE")
-                            flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
-                        else
-                            flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' and matecdgo='${flow.materias[0][1]}' order by encucdgo asc"
-                    }else
+                        if(session.tipoPersona=="Par"){
+                            flow.sql="select encucdgo as cod from encu where prof_par='${flow.cedula}' and tpencdgo='${flow.tipo}' and profcedl='${session.evaluado}' and matecdgo='${session.materia}' and crsocdgo='${session.curso}'  order by encucdgo asc"
+                            println "select encu cdgo "+flow.sql
+                        }else{
+                            if(flow.tipo=="FE")
+                                flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
+                            else
+                                flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' and matecdgo='${flow.materias[0][1]}' order by encucdgo asc"
+                        }
+                    }else{
                         flow.sql="select encucdgo as cod from encu where profcedl='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
+                    }
                 }
                 if(session.modulo=="adm") {
                     if(session.tpin=="ext"){
@@ -98,7 +110,7 @@ class EncuestasController {
                     flow.encucdgo=d.cod
                 }
 
-                //println "encu encontro  "+ flow.encucdgo
+                println "encu encontro  "+ flow.encucdgo
                 if(flow.encucdgo!=0){
                     //flow.sql="select count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.encucdgo=${flow.encucdgo}"
                     flow.sql="select first 1 prte.PRTENMRO as  co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO order by prte.PRTENMRO desc"
@@ -110,7 +122,7 @@ class EncuestasController {
                     //println "num tipo encu"+num
                     if(flow.max<=num){
                         flow.encucdgo=0
-                        if(session.modulo=="ins")
+                        if(session.modulo=="ins" || session.esPar )
                             return salir()
                     }
                 }
@@ -133,6 +145,11 @@ class EncuestasController {
                     if(flow.tipo=="AD") {
                         sqlInsert="insert into encu (encucdgo,tpencdgo,profcedl,encufcha,tpifcdgo) values (${flow.encucdgo},'${flow.tipo}','${flow.cedula}','${flow.fecha}','P')"
                     }
+                    if(flow.tipo=="PR") {
+                        sqlInsert="insert into encu (encucdgo,tpencdgo,profcedl,encufcha,prof_par,matecdgo,crsocdgo) values (${flow.encucdgo},'${flow.tipo}','${session.evaluado}','${flow.fecha}','${flow.cedula}','${session.materia}','${session.curso}')"
+                        //println "tipo pr "+sqlInsert
+
+                    }
                     if(session.modulo=="adm"){
                         //println "adm "+session.esAdmin
                         if(session.tpin=="ext" || session.tpin=="auto"){
@@ -146,7 +163,7 @@ class EncuestasController {
                         //println "inst "
                         sqlInsert="insert into encu (encucdgo,${((session.esAdmin)?'admncdla':'prsncdla')},encufcha,tpencdgo,tpprcdgo) values (${flow.encucdgo},'${flow.cedula}','${flow.fecha}','${flow.tipo}'${((session.esAdmin)?",'"+session.persona[6]+"'":",'"+session.persona[1]+"'")})"
                     }
-                    //println " sqlinsert encu!!!!! "+sqlInsert
+                    println " sqlinsert encu!!!!! "+sqlInsert
                     cn.execSql(sqlInsert)
                     flow.actual=1
                     flow.inicio=1
@@ -409,14 +426,20 @@ class EncuestasController {
 //                flow.start=true
                 flow.inserts=[:]
                 flow.multiples=[]
-                cn.disconnect();
+
                 if(flow.actual<flow.max)
                     return success()
                 else
                     return fin()
             }
-            on("success").to "procesarDatos"
-            on("fin"){flow.mensaje="Gracias por su colaboración"}.to "confirmar"
+            on("success"){
+                cn.disconnect();
+            }.to "procesarDatos"
+            on("fin"){
+                completaEncuesta(flow.encucdgo,cn)
+                cn.disconnect();
+                flow.mensaje="Gracias por su colaboración"
+            }.to "confirmar"
         }
 
         procesarDatos{
@@ -424,8 +447,11 @@ class EncuestasController {
                 cn = ConnectionFactory.getConnection('Fire')
                 flow.connected = cn.connect(flow.db.url, flow.db.driver, flow.db.user, flow.db.pass)
                 //println "max "+flow.max+" actual "+flow.actual+"  start "+flow.starts
-                if(flow.actual>flow.max && flow.start==true)
+                if(flow.actual>flow.max && flow.start==true){
+
                     return salir()
+
+                }
                 if(!flow.start){
                     //println "entro start"
                     flow.actual++
@@ -491,6 +517,7 @@ class EncuestasController {
             }
             on ("success").to "redirect"
             on("salir"){
+
                 if(session.tipoPersona=="P")
                     flow.mensaje="usted ya realizo su autoevaluación"
 
@@ -508,6 +535,14 @@ class EncuestasController {
 
         }
 
+    }
+
+    def completaEncuesta(encu,cn){
+        println "completa encuesta "+encu
+        def sql ="update encu set encuetdo='C' where encucdgo='${encu}' and encuetdo is null"
+        println "sql "+sql
+        cn.getDb().execute(sql.toString())
+        return
     }
 
     def listaProcesos={

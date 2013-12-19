@@ -4,7 +4,8 @@
     <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
     <link rel="stylesheet" href="${resource(dir:'css',file:'aplicacion.css')}" />
     <link rel="stylesheet" href="${resource(dir:'css',file:'botones.css')}" />
-    <link rel='stylesheet' href='${createLinkTo(dir:'js/jquery/css/tema', file:'jquery-ui-1.8.1.custom.css')}' />
+    %{--<link rel='stylesheet' href='${createLinkTo(dir:'js/jquery/css/tema2', file:'jquery-ui-1.10.3.custom.min.css')}' />--}%
+    %{--<link rel='stylesheet' href='${createLinkTo(dir:'js/jquery/css/tema', file:'jquery-ui-1.8.1.custom.css')}' />--}%
   <g:includeJQuery archivo="preguntas" />
   <g:layoutHead />
   <g:javascript library="application" />
