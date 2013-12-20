@@ -43,8 +43,7 @@
                 </ul>
             </div>
             <div class="textoDer">
-                @c
-                <img src="${resource(dir:'images',file:'qadmn.jpg')}" >
+                <img src="${resource(dir:'images',file:'qencu-par.jpg')}" >
             </div>
         </div>
     <div class="login">

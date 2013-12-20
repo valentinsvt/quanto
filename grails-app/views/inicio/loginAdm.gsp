@@ -46,7 +46,7 @@
       </div>
       <div class="login">
         <g:form action="loginAdm" method="post">
-          <fieldset style="width: 350px; height: 145px; margin-top: 4px; border-color: black;" >
+          <fieldset style="width: 360px; height: 145px; margin-top: 4px; border-color: black;" >
             <legend>Ingrese sus datos personales</legend>
             <div class="fila der " style="margin-top: 10px;">
               <label>Cédula de Identidad:</label><input class="cedula" type="text" name="cdla" maxlength="10" size="12">
