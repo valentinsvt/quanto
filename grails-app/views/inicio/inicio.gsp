@@ -26,7 +26,6 @@
     <div id="4" class="botones " style="position: absolute; left: 430px; top: 240px; width: 245px; height: 167px;z-index: 2">
         <g:link action="loginDirec" ><div >Soy Directivo<img class="img_4" src="${resource(dir:'images',file:'qencu-dire.jpg')}" style="border: white" width="245px;" height="167px;" /></div></g:link>
     </div>
-
     %{--
           <div id="1" class="botones " style="position: absolute; left: 60px; top: 70px; width: 245px; height: 167px;z-index: 1"><g:link action="login"  ><div   ><img  class="img_1" src="${resource(dir:'images',file:'qencu.jpg')}" style="border: white;" /></div></g:link></div>
           <div id="2" class="botones " style="position: absolute; left: 230px; top: 180px; width: 246px; height: 167px;z-index: 2"><g:link action="loginAdm" ><div ><img class="img_2" src="${resource(dir:'images',file:'qadmn.jpg')}" style="border: white"/></div></g:link></div>
