@@ -48,7 +48,7 @@ ${pregunta}
         </g:if>
           </div>
         <div class="abort"><g:link controller="encuestas" action="encuesta" event="abortar" class="btn">Abortar</g:link></div>
-        <div class="save"><g:link controller="encuestas" action="encuesta" event="guardar" class="btn">Guardar</g:link></div>
+        %{--<div class="save"><g:link controller="encuestas" action="encuesta" event="guardar" class="btn">Guardar</g:link></div>--}%
         <div class="next"> <a href="#" id="siguienteTipo3" class="btn">Siguiente</a></div>
       </div>
        </g:form>

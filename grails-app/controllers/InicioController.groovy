@@ -108,6 +108,8 @@ class InicioController {
                 session.tipoPersona="Par"
                 redirect(action: "listaProfesores",params: [msg:msg])
                 return
+            }else{
+                [msg:"Verifique el número de su cédula de identidad"]
             }
         }
     }
@@ -126,7 +128,29 @@ class InicioController {
     }
 
     def loginDirec ={
-
+        if (request.method == "POST") {
+            println "login direct "+params
+            session.setAttribute("cedula",  params.cdla)
+            session.setAttribute("modulo",  "prof")
+            db.setDB("prof")
+            def esc =  verificaCedula(params.cdla,"S")
+            if(esc){
+                def opciones = verificaEncuestaDir(params.cdla)
+                def msg =""
+                if(opciones.size()<1){
+                    msg="Ya ha Evaluado a todos sus Profesores"
+                }
+                session.setAttribute("tpin","P")
+                session.opciones=opciones
+                session.esDirectivo=true
+                session.tipo="DI"
+                session.tipoPersona="Dir"
+                redirect(action: "listaProfesores",params: [msg:msg])
+                return
+            }else{
+                [msg:"Verifique el número de su cédula de identidad"]
+            }
+        }
     }
 
     def pantallaDeEspera={
@@ -138,6 +162,7 @@ class InicioController {
         if(session.modulo == "prof"){
             if(session.tipoPersona != "P")
                 if(session.tipoPersona != "Par")
+                    if(session.tipoPersona != "Dir")
                     redirect(action: "registro")
                 else
                     redirect(controller: "encuestas", action: "encuesta")
@@ -1209,10 +1234,51 @@ class InicioController {
         println "sql "+sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
-            def sq="select matecdgo,crsocdgo from encu where profcedl='${d['profcedl']}' and prof_par='${cedula}' and matecdgo is not null and crsocdgo is not null"
+            def sq="select matecdgo,crsocdgo from encu where profcedl='${d['profcedl']}' and prof_par='${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo!='C'"
             def band=false
             cn2.getDb().eachRow(sq.toString()){c->
                // println "entro 2 each "+d['profcedl']+"   "+c+"   -->  "+d["matecdgo"]+"!  "+d["crsocdgo"]+"!"
+                band=true
+                if(!(d["matecdgo"]==c["matecdgo"] && d["crsocdgo"]==c["crsocdgo"])){
+                    println "si add"
+                    op.add(d.toRowResult())
+                }else{
+
+                }
+            }
+            if(!band)
+                op.add(d.toRowResult())
+        }
+        //println "op!!!!! ---> "+op
+        cn.disconnect()
+        cn2.disconnect()
+        return op
+
+    }
+
+    def verificaEncuestaDir(cedula){
+        db.setDB(session.modulo)
+        cn = ConnectionFactory.getConnection('Fire')
+        cn.connect(db.url, db.driver, db.user, db.pass)
+        def cn2 = ConnectionFactory.getConnection('Fire')
+        cn2.connect(db.url, db.driver, db.user, db.pass)
+        def op = []
+        def sql="select  p.profcedl,p.profnmbr,p.profapll,m.matedscr ,c.crsodscr ,p.esclcdgo,m.matecdgo,c.crsocdgo"
+        sql+=" from prof p,dcta d, mate m, crso c"
+        sql+=" where"
+        sql+=" p.profcedl=d.profcedl"
+        sql+=" and d.matecdgo=m.matecdgo"
+        sql+=" and d.crsocdgo=c.crsocdgo"
+        sql+=" and p.profcedl!='${cedula}'"
+        // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
+        sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
+        println "sql "+sql
+        def  cont = 0
+        cn.getDb().eachRow(sql.toString()) { d ->
+            def sq="select matecdgo,crsocdgo from encu where profcedl='${d['profcedl']}' and PROFDRTV='${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo!='C'"
+            def band=false
+            cn2.getDb().eachRow(sq.toString()){c->
+                // println "entro 2 each "+d['profcedl']+"   "+c+"   -->  "+d["matecdgo"]+"!  "+d["crsocdgo"]+"!"
                 band=true
                 if(!(d["matecdgo"]==c["matecdgo"] && d["crsocdgo"]==c["crsocdgo"])){
                     println "si add"
@@ -1236,6 +1302,7 @@ class InicioController {
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
         def sql ="select esclcdgo from prof where profcedl = '${cedula}' and profeval = '${tipo}'"
+        println "sql login "+sql
         def res=null
         cn.getDb().eachRow(sql.toString()) { d ->
             res=d["esclcdgo"]

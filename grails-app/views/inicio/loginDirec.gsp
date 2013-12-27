@@ -30,7 +30,7 @@
         <div class="logo"><img src="${resource(dir:'images',file:'universidad.jpg')}"></div>
         %{--<div class="logo_tx"><h1>Universidad Nacional de Chimborazo </h1>--}%
         <div class="logo_tx">
-        <h1>${message(code: 'universidad', default: 'Tedein S.A. - Pruebas')}</h1>
+            <h1>${message(code: 'universidad', default: 'Tedein S.A. - Pruebas')}</h1>
             <br/>Sistema para uso exclusivo de la esta Universidad
         </div>
         <div class="info">
@@ -43,11 +43,11 @@
                 </ul>
             </div>
             <div class="textoDer">
-                <img src="${resource(dir:'images',file:'qencu-par.jpg')}" >
+                <img src="${resource(dir:'images',file:'qencu-dire.jpg')}" >
             </div>
         </div>
     <div class="login">
-        <g:form action="loginPares" method="post">
+        <g:form action="loginDirec" method="post">
             <fieldset style="width: 350px; height: 145px; margin-top: 4px; border-color: black;" >
                 <legend>Ingrese sus datos personales</legend>
                 <div class="fila der " style="margin-top: 10px;">

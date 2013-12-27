@@ -43,7 +43,10 @@ class EncuestasController {
                     flow.condicion=" encu.prsncdla='${flow.cedula}' "
                 else{
                     if(!session.esPar)
-                        flow.condicion=" encu.admncdla='${flow.cedula}' "
+                        if(session.esDirectivo)
+                            flow.condicion=" encu.PROFDRTV='${flow.cedula}' "
+                        else
+                            flow.condicion=" encu.admncdla='${flow.cedula}' "
                     else{
                         flow.condicion=" encu.prof_par='${flow.cedula}' "
                     }
@@ -82,10 +85,15 @@ class EncuestasController {
                             flow.sql="select encucdgo as cod from encu where prof_par='${flow.cedula}' and tpencdgo='${flow.tipo}' and profcedl='${session.evaluado}' and matecdgo='${session.materia}' and crsocdgo='${session.curso}'  order by encucdgo asc"
                             println "select encu cdgo "+flow.sql
                         }else{
-                            if(flow.tipo=="FE")
-                                flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
-                            else
-                                flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' and matecdgo='${flow.materias[0][1]}' order by encucdgo asc"
+                            if(session.tipoPersona=="Dir"){
+                                flow.sql="select encucdgo as cod from encu where PROFDRTV='${flow.cedula}' and tpencdgo='${flow.tipo}' and profcedl='${session.evaluado}' and matecdgo='${session.materia}' and crsocdgo='${session.curso}'  order by encucdgo asc"
+                                println "select encu cdgo dir "+flow.sql
+                            }else{
+                                if(flow.tipo=="FE")
+                                    flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
+                                else
+                                    flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' and matecdgo='${flow.materias[0][1]}' order by encucdgo asc"
+                            }
                         }
                     }else{
                         flow.sql="select encucdgo as cod from encu where profcedl='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
@@ -147,6 +155,11 @@ class EncuestasController {
                     }
                     if(flow.tipo=="PR") {
                         sqlInsert="insert into encu (encucdgo,tpencdgo,profcedl,encufcha,prof_par,matecdgo,crsocdgo) values (${flow.encucdgo},'${flow.tipo}','${session.evaluado}','${flow.fecha}','${flow.cedula}','${session.materia}','${session.curso}')"
+                        //println "tipo pr "+sqlInsert
+
+                    }
+                    if(flow.tipo=="DI") {
+                        sqlInsert="insert into encu (encucdgo,tpencdgo,profcedl,encufcha,PROFDRTV,matecdgo,crsocdgo) values (${flow.encucdgo},'${flow.tipo}','${session.evaluado}','${flow.fecha}','${flow.cedula}','${session.materia}','${session.curso}')"
                         //println "tipo pr "+sqlInsert
 
                     }
