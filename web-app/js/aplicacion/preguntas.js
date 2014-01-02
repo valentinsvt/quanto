@@ -38,6 +38,7 @@ $(function() {
         enviar();
     });
 
+
     $("#emp").click(function(){
        child=window.open('abrir','QUANTO','left=0,top=0,width=850,height=600,toolbar=0,resizable=0,menubar=0,scrollbars=1,status=0');
        if (child.opener == null) child.opener = self;

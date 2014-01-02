@@ -182,7 +182,6 @@ class EncuestasController {
                     flow.inicio=1
                 }
                 else{
-
                     flow.sql="select count(*) as actual from  dtec where encucdgo=${flow.encucdgo}"
                     // println "sql cpunt "+flow.sql
                     cn.getDb().eachRow(flow.sql) { d ->

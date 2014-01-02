@@ -123,6 +123,7 @@ class InicioController {
     }
 
 
+
     def listaProfesores={
         [opciones:session.opciones,msg:params.msg]
     }
@@ -1231,7 +1232,7 @@ class InicioController {
         sql+=" and p.profcedl!='${cedula}'"
        // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
         sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
-        println "sql "+sql
+       //println "sql "+sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
             def sq="select matecdgo,crsocdgo from encu where profcedl='${d['profcedl']}' and prof_par='${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo!='C'"
