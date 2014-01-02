@@ -15,7 +15,7 @@
     <div class="contenido ui-widget-content ui-corner-all " style="position: absolute;left: 10px;">
 
       <div class=" filaEntera ui-corner-all " >
-        <div style="float: left"><img src="${resource(dir:'images',file:'quanto.png')}" width="420px" height="318px"/></div>
+        <div style="float: left"><img src="${resource(dir:'images',file:'quanto.jpg')}" width="410px" height="415px"/></div>
         Usted está a punto de inicar la Evaluación<br><br>
 
         Por favor lea  y entienda bien las preguntas y señale la opción de respuesta que más se aplique.<br><br>
