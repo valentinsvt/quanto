@@ -96,7 +96,7 @@ $(function() {
         else{
             $(".mensaje").html("Debe seleccionar al menos una opcion")
             $(".mensaje").show("slide")
-            $(".filaEntera").height($("#cuerpo").height()-15)
+            //$(".filaEntera").height($("#cuerpo").height()-15)
         }
     });
 

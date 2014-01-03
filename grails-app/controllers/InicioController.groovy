@@ -1264,7 +1264,7 @@ class InicioController {
 */
                 op.add(d.toRowResult())
         }
-        println "op!!!!! ---> "+op.size()
+       // println "op!!!!! ---> "+op.size()
         cn.disconnect()
         cn2.disconnect()
         return op
@@ -1297,7 +1297,7 @@ class InicioController {
         // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
         sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
 */
-        println "sql "+sql
+        //println "sql "+sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
 /*
@@ -1317,7 +1317,7 @@ class InicioController {
 */
                 op.add(d.toRowResult())
         }
-        println "op!!!!! ---> " + op.size()
+        //println "op!!!!! ---> " + op.size()
         cn.disconnect()
         cn2.disconnect()
         return op
