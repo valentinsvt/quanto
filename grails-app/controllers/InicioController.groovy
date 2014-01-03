@@ -1279,6 +1279,16 @@ class InicioController {
         cn2.connect(db.url, db.driver, db.user, db.pass)
         def op = []
 
+        def sql = "select profnmbr, profapll, prof.profcedl, dcta.matecdgo, matedscr, dcta.crsocdgo, crsodscr " +
+                "from prof, dcta, mate, crso " +
+                "where dcta.profcedl = prof.profcedl and mate.matecdgo = dcta.matecdgo and " +
+                "prof.esclcdgo = (select esclcdgo from prof where profcedl = '${cedula}') and " +
+                "prof.profcedl not in (select profcedl from encu where profdrtv = '${cedula}') and " +
+                "crso.crsocdgo = dcta.crsocdgo " +
+                "group by profnmbr, profapll, prof.profcedl, dcta.matecdgo, matedscr, dcta.crsocdgo, crsodscr " +
+                "order by profapll"
+
+/*
         def sql = "select prof.profcedl, prof.profnmbr, prof.profapll, mate.matedscr, crso.crsodscr, prof.esclcdgo, mate.matecdgo, crso.crsocdgo "
         sql += "from prof, dcta, mate, crso "
         sql += "where prof.profcedl = dcta.profcedl and dcta.matecdgo = mate.matecdgo and "
@@ -1286,6 +1296,7 @@ class InicioController {
         sql += "select profcedl from encu where profdrtv = '${cedula}' and encuetdo = 'C' and "
         sql += "encu.matecdgo = dcta.matecdgo and encu.crsocdgo = dcta.crsocdgo and tpencdgo = 'DI') "
         sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
+*/
 
 /*
         def sql="select  p.profcedl, p.profnmbr, p.profapll, m.matedscr , c.crsodscr , p.esclcdgo, m.matecdgo, c.crsocdgo "
@@ -1297,7 +1308,7 @@ class InicioController {
         // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
         sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
 */
-        //println "sql "+sql
+        println "sql Dir: "+sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
 /*
