@@ -1215,6 +1215,7 @@ class InicioController {
     def IE={
         render("asdasdasd IE")
     }
+
     /*TODO ver si esto se puede hacer mas rapido*/
     def verificaEncuesta(cedula,esc){
         db.setDB(session.modulo)
@@ -1223,34 +1224,47 @@ class InicioController {
         def cn2 = ConnectionFactory.getConnection('Fire')
         cn2.connect(db.url, db.driver, db.user, db.pass)
         def op = []
-        def sql="select  p.profcedl,p.profnmbr,p.profapll,m.matedscr ,c.crsodscr ,p.esclcdgo,m.matecdgo,c.crsocdgo"
-        sql+=" from prof p,dcta d, mate m, crso c"
-        sql+=" where"
-        sql+=" p.profcedl=d.profcedl"
-        sql+=" and d.matecdgo=m.matecdgo"
-        sql+=" and d.crsocdgo=c.crsocdgo"
-        sql+=" and p.profcedl!='${cedula}'"
-       // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
-        sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
-       //println "sql "+sql
+
+        def sql = "select prof.profcedl, prof.profnmbr, prof.profapll, mate.matedscr, crso.crsodscr, prof.esclcdgo, mate.matecdgo, crso.crsocdgo "
+        sql += "from prof, dcta, mate, crso "
+        sql += "where prof.profcedl = dcta.profcedl and dcta.matecdgo = mate.matecdgo and "
+        sql += "dcta.crsocdgo = crso.crsocdgo and prof.profcedl != '${cedula}' and prof.profcedl not in ("
+        sql += "select profcedl from encu where prof_par = '${cedula}' and encuetdo = 'C' and "
+        sql += "encu.matecdgo = dcta.matecdgo and encu.crsocdgo = dcta.crsocdgo and tpencdgo = 'PR') "
+        sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
+
+/*
+        def sql = "select p.profcedl, p.profnmbr, p.profapll, m.matedscr, c.crsodscr, p.esclcdgo, m.matecdgo, c.crsocdgo "
+        sql += "from prof p, dcta d, mate m, crso c "
+        sql += "where p.profcedl = d.profcedl and "
+        sql += "d.matecdgo = m.matecdgo and "
+        sql += "d.crsocdgo = c.crsocdgo and "
+        sql += "p.profcedl != '${cedula}' "
+        // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
+        sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
+        println "sqlPar: " + sql
+*/
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
-            def sq="select matecdgo,crsocdgo from encu where profcedl='${d['profcedl']}' and prof_par='${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo!='C'"
-            def band=false
+/*
+            def sq = "select matecdgo, crsocdgo from encu where profcedl = '${d['profcedl']}' and prof_par='${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo ='C'"
+            //println "interno: " + sq
+            def band = false
             cn2.getDb().eachRow(sq.toString()){c->
-               // println "entro 2 each "+d['profcedl']+"   "+c+"   -->  "+d["matecdgo"]+"!  "+d["crsocdgo"]+"!"
-                band=true
-                if(!(d["matecdgo"]==c["matecdgo"] && d["crsocdgo"]==c["crsocdgo"])){
+                //println "entro 2 each "+d['profcedl']+"   "+c+"   -->  "+d["matecdgo"]+"!  "+d["crsocdgo"]+"!"
+                band = true
+                if(!((d["matecdgo"] == c["matecdgo"]) && (d["crsocdgo"] == c["crsocdgo"]))){
                     println "si add"
                     op.add(d.toRowResult())
-                }else{
+                } else {
 
                 }
             }
             if(!band)
+*/
                 op.add(d.toRowResult())
         }
-        //println "op!!!!! ---> "+op
+        println "op!!!!! ---> "+op.size()
         cn.disconnect()
         cn2.disconnect()
         return op
@@ -1264,24 +1278,35 @@ class InicioController {
         def cn2 = ConnectionFactory.getConnection('Fire')
         cn2.connect(db.url, db.driver, db.user, db.pass)
         def op = []
-        def sql="select  p.profcedl,p.profnmbr,p.profapll,m.matedscr ,c.crsodscr ,p.esclcdgo,m.matecdgo,c.crsocdgo"
-        sql+=" from prof p,dcta d, mate m, crso c"
-        sql+=" where"
-        sql+=" p.profcedl=d.profcedl"
-        sql+=" and d.matecdgo=m.matecdgo"
-        sql+=" and d.crsocdgo=c.crsocdgo"
-        sql+=" and p.profcedl!='${cedula}'"
+
+        def sql = "select prof.profcedl, prof.profnmbr, prof.profapll, mate.matedscr, crso.crsodscr, prof.esclcdgo, mate.matecdgo, crso.crsocdgo "
+        sql += "from prof, dcta, mate, crso "
+        sql += "where prof.profcedl = dcta.profcedl and dcta.matecdgo = mate.matecdgo and "
+        sql += "dcta.crsocdgo = crso.crsocdgo and prof.profcedl != '${cedula}' and prof.profcedl not in ("
+        sql += "select profcedl from encu where profdrtv = '${cedula}' and encuetdo = 'C' and "
+        sql += "encu.matecdgo = dcta.matecdgo and encu.crsocdgo = dcta.crsocdgo and tpencdgo = 'DI') "
+        sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
+
+/*
+        def sql="select  p.profcedl, p.profnmbr, p.profapll, m.matedscr , c.crsodscr , p.esclcdgo, m.matecdgo, c.crsocdgo "
+        sql += "from prof p, dcta d, mate m, crso c "
+        sql += "where p.profcedl = d.profcedl and "
+        sql += "d.matecdgo = m.matecdgo and "
+        sql += "d.crsocdgo = c.crsocdgo and "
+        sql += "p.profcedl != '${cedula}'"
         // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
         sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
+*/
         println "sql "+sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
-            def sq="select matecdgo,crsocdgo from encu where profcedl='${d['profcedl']}' and PROFDRTV='${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo!='C'"
-            def band=false
+/*
+            def sq = "select matecdgo, crsocdgo from encu where profcedl = '${d['profcedl']}' and PROFDRTV = '${cedula}' and matecdgo is not null and crsocdgo is not null and encuetdo != 'C'"
+            def band = false
             cn2.getDb().eachRow(sq.toString()){c->
                 // println "entro 2 each "+d['profcedl']+"   "+c+"   -->  "+d["matecdgo"]+"!  "+d["crsocdgo"]+"!"
-                band=true
-                if(!(d["matecdgo"]==c["matecdgo"] && d["crsocdgo"]==c["crsocdgo"])){
+                band = true
+                if(!(d["matecdgo"] == c["matecdgo"] && d["crsocdgo"]==c["crsocdgo"])){
                     println "si add"
                     op.add(d.toRowResult())
                 }else{
@@ -1289,9 +1314,10 @@ class InicioController {
                 }
             }
             if(!band)
+*/
                 op.add(d.toRowResult())
         }
-        //println "op!!!!! ---> "+op
+        println "op!!!!! ---> " + op.size()
         cn.disconnect()
         cn2.disconnect()
         return op
