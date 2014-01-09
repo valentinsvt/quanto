@@ -14,6 +14,9 @@ class InicioController {
         session.modulo=null
     }
 
+    /* TODO se puede tambien validar estudiantes en esta instancia--
+     *  depende de si se aceptan o no registro de nuevos estudiantes para evaluar
+     *  */
     def login = {
         //println params
         def tx = ""
@@ -167,7 +170,7 @@ class InicioController {
 //        if(session.esDirectivo) sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
 
         cn.getDb().eachRow(sql.toString()) { d ->
-            prsn = d.nmbr + " " + d.apll
+            if(d.nmbr) prsn = d.nmbr + " " + d.apll
         }
         cn.disconnect()
         [persona: session.tipoPersona, prsn: prsn]

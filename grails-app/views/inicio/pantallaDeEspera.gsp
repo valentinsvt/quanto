@@ -25,6 +25,9 @@
         .cajaEstd {
             color: #055;
         }
+        .cajaErr {
+            color: #611;
+        }
 
       </style>
   </head>
@@ -39,7 +42,15 @@
 
         %{--<g:if test="docentes"> Si aun no ha ingresado las materias en las que se halla matriculado, hágalo usando el botón "registrar materias"--}%
         %{--</g:if>--}%
-        modulo: ${persona}
+        %{--modulo: ${persona}--}%
+        <g:if test="${(!prsn)}">
+            <div class="caja cajaErr">
+                <p>Error</p>
+                <p style="font-weight: bold">La cédula que ingresó no se halla registrada</p>
+                <p>Consulte con el Administrador del Sistema</p>
+            </div>
+        </g:if>
+        <g:else>
         <g:if test="${(persona == 'P')}">
             <div class="caja cajaProf">
                 <p>Usted se halla registrado en el sistema como Docente</p>
@@ -52,9 +63,12 @@
             <p style="margin-top: 20px;">Bienvenido</p><p style="margin-top: 30px; font-weight: bold">${prsn}</p>
             </div>
         </g:if>
+        </g:else>
       </div>
       <div style=" width: 230px;height: 45px;position: absolute; bottom: 20px;left:20px;"><a href="${createLink(controller: 'inicio', action: 'inicio')}" class="btn"><font size="3">Abandonar la Encuesta</font></a></div>
+      <g:if test="${(prsn)}">
       <div style=" width: 130px;height: 45px;position: absolute; bottom: 20px;right:20px;"><a href="#" id="emp" class="btn"><font size="5">Empezar</font></a></div>
+      </g:if>
     </div>
   </body>
 
