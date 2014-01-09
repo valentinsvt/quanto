@@ -12,7 +12,7 @@
         Pregunta ${actual} de ${max}
       </div>
       <div class="mensaje" style="display: none;"></div>
-      <div class=" filaEntera ui-corner-all borde" >
+      <div class="filaEntera ui-corner-all borde pregunta" >
 ${pregunta}
       </div>
        <g:form action="encuesta" controller="encuestas" event="siguiente" class="formEncuestas">

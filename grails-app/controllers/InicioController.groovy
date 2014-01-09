@@ -125,7 +125,7 @@ class InicioController {
 
 
     def listaProfesores={
-        [opciones:session.opciones,msg:params.msg]
+        [opciones:session.opciones, msg:params.msg]
     }
 
     def loginDirec ={
@@ -154,21 +154,50 @@ class InicioController {
         }
     }
 
-    def pantallaDeEspera={
+    def pantallaDeEspera = {
+        println session
+        db.setDB(session.modulo)
+        cn = ConnectionFactory.getConnection('Fire')
+        cn.connect(db.url, db.driver, db.user, db.pass)
+        def prsn = ""
+        def sql = ""
+        if(session.tipoPersona == 'E') sql = "select estdnmbr nmbr, estdapll apll from estd where estdcdgo = '${session.cedula}'"
+        if(session.tipoPersona == 'P') sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
+//        if(session.esPar) sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
+//        if(session.esDirectivo) sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
+
+        cn.getDb().eachRow(sql.toString()) { d ->
+            prsn = d.nmbr + " " + d.apll
+        }
+        cn.disconnect()
+        [persona: session.tipoPersona, prsn: prsn]
         //println " session espera " + session.cedula + " " + session.modulo + "  " + session.tpin
     }
 
     def abrir={
-        //println " session abrir " + session.cedula + " " + session.modulo + "  " + session.tpin
-        if(session.modulo == "prof"){
-            if(session.tipoPersona != "P")
-                if(session.tipoPersona != "Par")
-                    if(session.tipoPersona != "Dir")
-                    redirect(action: "registro")
-                else
+        println " session abrir " + session.cedula + " " + session.modulo + "  " + session.tpin + session.tipoPersona
+        if(session.modulo == "prof") {
+            if(session.tipoPersona == "P") { redirect(controller: "encuestas", action: "encuesta") }
+            if(session.tipoPersona == "Par") { redirect(controller: "encuestas", action: "encuesta") }
+            if(session.tipoPersona == "Dir") { redirect(controller: "encuestas", action: "encuesta") }
+            if(session.tipoPersona == "E") { redirect(action: "registro") }
+/*
+
+            if(session.tipoPersona != "P"){
+                if(session.tipoPersona != "Par"){
+                    if(session.tipoPersona != "Dir") {
+                        redirect(action: "registro")
+                    } else {
+                        redirect(controller: "encuestas", action: "encuesta")
+                    }
+                }else  {
                     redirect(controller: "encuestas", action: "encuesta")
-            else
+                }
+            } else {
                 redirect(controller: "encuestas", action: "encuesta")
+
+            }
+*/
         }
         else{
             redirect(action:"registroAdm")
@@ -755,35 +784,39 @@ class InicioController {
         def incompletas=1
         sql="select count(*) as maxpreg from prte where tpencdgo = 'DC'"
         cn.getDb().eachRow(sql) { d ->
-            max=d.maxpreg
+            max = d.maxpreg
         }
-        sql="select encu.encucdgo,encu.matecdgo,encu.profcedl,encu.dctaprll,encu.crsocdgo,count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.estdcdgo='${session.cedula}' and encu.tpencdgo='DC' group by encucdgo,matecdgo,profcedl,dctaprll,crsocdgo"
+        sql="select encu.encucdgo, encu.matecdgo, encu.profcedl, encu.dctaprll, encu.crsocdgo, count(*) as co" +
+                " from dtec, encu " +
+                "where encu.encucdgo = dtec.encucdgo and encu.estdcdgo = '${session.cedula}' and " +
+                "encu.tpencdgo = 'DC' group by encucdgo, matecdgo, profcedl, dctaprll, crsocdgo"
         //println " primer  \n"+sql
         cn.getDb().eachRow(sql) { d ->
             //println "detalles encu "+d
-            if(d.co<max){
+            if(d.co < max){
                 def cdgo = "${d.profcedl.toString().trim()}:" +
                         "${d.matecdgo.toString().trim()}:" +
                         "${d.crsocdgo.toString().trim()}:" +
                         "${d.dctaprll.toString().trim()}"
-                temp.add([cdgo,d.matecdgo,d.profcedl,d.dctaprll,d.crsocdgo,d.co])
+                temp.add([cdgo, d.matecdgo, d.profcedl, d.dctaprll, d.crsocdgo, d.co])
             }
             else{
                 def cdgo = "${d.profcedl.toString().trim()}:" +
                         "${d.matecdgo.toString().trim()}:" +
                         "${d.crsocdgo.toString().trim()}:" +
                         "${d.dctaprll.toString().trim()}"
-                ex.add([cdgo,d.matecdgo,d.profcedl,d.dctaprll,d.crsocdgo,d.co])
+                ex.add([cdgo, d.matecdgo, d.profcedl, d.dctaprll, d.crsocdgo, d.co])
             }
         }
         //println "TEMP \n"+ex
         temp.each{
-            sql="select matr.matecdgo, matedscr, profnmbr||' '||profapll prof," +
+            sql = "select matr.matecdgo, matedscr, profnmbr||' '||profapll prof," +
                     "crsodscr, matr.dctaprll, matr.profcedl, matr.crsocdgo from matr, crso, mate, prof " +
                     "where matr.estdcdgo = '${session.cedula}' and prof.profcedl = matr.profcedl and " +
                     "mate.matecdgo = matr.matecdgo and crso.crsocdgo = matr.crsocdgo "+
-                    " and matr.matecdgo='${it[0]}' and prof.profcedl='${it[1]}' and crso.crsocdgo='${it[3]}' and  matr.dctaprll='${it[2]}'"
-            //println "SQL TEMP _____________ \n "+sql
+//                    " and matr.matecdgo='${it[0]}' and prof.profcedl='${it[1]}' and crso.crsocdgo='${it[3]}' and  matr.dctaprll='${it[2]}'"
+                    " and matr.matecdgo='${it[1]}' and prof.profcedl='${it[2]}' and crso.crsocdgo='${it[4]}' and  matr.dctaprll='${it[3]}'"
+//            println "SQL TEMP _____________ \n "+sql
             cn.getDb().eachRow(sql) { d ->
                 def cdgo = "${d.profcedl?.toString().trim()}:" +
                         "${d.matecdgo?.toString().trim()}:" +
@@ -1164,6 +1197,7 @@ class InicioController {
         else
             return false
     }
+
     boolean existeAdministrativo(cdla){
         db.setDB(session.modulo)
         cn = ConnectionFactory.getConnection('Fire')
@@ -1262,9 +1296,9 @@ class InicioController {
             }
             if(!band)
 */
-                op.add(d.toRowResult())
+            op.add(d.toRowResult())
         }
-       // println "op!!!!! ---> "+op.size()
+        // println "op!!!!! ---> "+op.size()
         cn.disconnect()
         cn2.disconnect()
         return op
@@ -1283,7 +1317,7 @@ class InicioController {
                 "from prof, dcta, mate, crso " +
                 "where dcta.profcedl = prof.profcedl and mate.matecdgo = dcta.matecdgo and " +
                 "prof.esclcdgo = (select esclcdgo from prof where profcedl = '${cedula}') and " +
-                "prof.profcedl not in (select profcedl from encu where profdrtv = '${cedula}') and " +
+                "prof.profcedl not in (select profcedl from encu where profdrtv = '${cedula}' and encuetdo = 'C') and " +
                 "crso.crsocdgo = dcta.crsocdgo " +
                 "group by profnmbr, profapll, prof.profcedl, dcta.matecdgo, matedscr, dcta.crsocdgo, crsodscr " +
                 "order by profapll"
@@ -1326,7 +1360,7 @@ class InicioController {
             }
             if(!band)
 */
-                op.add(d.toRowResult())
+            op.add(d.toRowResult())
         }
         //println "op!!!!! ---> " + op.size()
         cn.disconnect()

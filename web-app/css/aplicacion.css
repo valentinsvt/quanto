@@ -47,7 +47,7 @@ body {
     height: 45px;
     position: absolute;
     bottom: 1px;
-    left: 170px;
+    left: 220px;
     padding-top: 5px;
 }
 .back{
@@ -57,18 +57,18 @@ body {
     margin-right: 10px;
 }
 .next{
-    width: 100px;
+    width: 120px;
     height: 40px;
     float: left;
 }
 .save{
-     width: 100px;
+    width: 100px;
     height: 40px;
     float: left;
     margin-right: 10px;
 }
 .abort{
-     width: 100px;
+    width: 100px;
     height: 40px;
     float: left;
     margin-right: 10px;
@@ -76,12 +76,14 @@ body {
 
 .filaBotones a{
     height: 37px;
-    width: 100px;
+    /*width: 100px;*/
     padding-top: 8px;
     font-size: 14px;
 }
+
 .pregunta{
-    font-size: 16px;
+    font-size: 15px;
+    color: #04426d;
 }
 .submit{
     cursor: pointer;
@@ -89,8 +91,8 @@ body {
 }
 
 .fila{
-    width: 300px;    
-    margin-bottom: 5px;
+    width: 330px;
+    margin-bottom: 10px;
     cursor: pointer;
 }
 .fondoFila{
@@ -105,6 +107,19 @@ body {
     padding: 15px;
     margin-left: 8px;
 }
+
+.filaRespuestas{
+    display: block;
+    clear: both;
+    margin-top :20px;
+    padding: 15px;
+    margin-right: 20px;
+    float: right;
+    width:240px;
+    color: #000;
+}
+
+
 .barra{
     padding-left: 15px;
     padding-right: 15px;

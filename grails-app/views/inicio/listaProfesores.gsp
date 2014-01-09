@@ -17,6 +17,7 @@
         <h1>${message(code: 'universidad', default: 'Tedein S.A. - Pruebas')}</h1>
         <br/>Sistema para uso exclusivo de la esta Universidad
     </div>
+    <div style="float: right; margin-top: -20px;"> <a href="${createLink(controller: 'inicio', action: 'inicio')}" id="fin" class="btn">Abandonar la Encuesta</a></div>
     <div class=" filaEntera ui-corner-all " >
        <h3>Seleccione al profesor que desea evaluar</h3>
     </div>
@@ -44,8 +45,9 @@
             </tbody>
         </table>
     </div>
-
 </div>
+%{--<div style=" width: 130px;height: 45px;"><a href="${createLink(controller: 'inicio', action: 'inicio')}" id="fin" class="btn"><font size="5">Finalizar</font></a></div>--}%
+
 <script type="text/javascript">
     $(".eval").button().click(function(){
         var cedula=$(this).attr("cedula")

@@ -70,36 +70,36 @@ class EncuestasController {
                         }
                     }
                 }
-                flow.sql="select count(*) as maxpreg from prte where tpencdgo = '${flow.tipo}'"
+                flow.sql = "select count(*) as maxpreg from prte where tpencdgo = '${flow.tipo}'"
                 cn.getDb().eachRow(flow.sql) { d ->
-                    flow.max=d.maxpreg
+                    flow.max = d.maxpreg
                 }
-                //println "max  pregs "+flow.max
-                flow.pregunta=""
-                flow.pregcdgo=""
-                flow.encucdgo=0
+                println "max  pregs " + flow.max
+                flow.pregunta = ""
+                flow.pregcdgo = ""
+                flow.encucdgo = 0
                 /****************************************************************ENCUCDGO****************************************************************************/
-                if(session.modulo=="prof"){
-                    if(session.tipoPersona!="P")  {
-                        if(session.tipoPersona=="Par"){
+                if(session.modulo == "prof") {
+                    if(session.tipoPersona != "P")  {
+                        if(session.tipoPersona == "Par"){
                             flow.sql="select encucdgo as cod from encu where prof_par='${flow.cedula}' and tpencdgo='${flow.tipo}' and profcedl='${session.evaluado}' and matecdgo='${session.materia}' and crsocdgo='${session.curso}'  order by encucdgo asc"
                             println "select encu cdgo "+flow.sql
                         }else{
                             if(session.tipoPersona=="Dir"){
                                 flow.sql="select encucdgo as cod from encu where PROFDRTV='${flow.cedula}' and tpencdgo='${flow.tipo}' and profcedl='${session.evaluado}' and matecdgo='${session.materia}' and crsocdgo='${session.curso}'  order by encucdgo asc"
                                 println "select encu cdgo dir "+flow.sql
-                            }else{
-                                if(flow.tipo=="FE")
+                            } else {
+                                if(flow.tipo == "FE")
                                     flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
                                 else
                                     flow.sql="select encucdgo as cod from encu where  estdcdgo='${flow.cedula}' and tpencdgo='${flow.tipo}' and matecdgo='${flow.materias[0][1]}' order by encucdgo asc"
                             }
                         }
-                    }else{
+                    } else {
                         flow.sql="select encucdgo as cod from encu where profcedl='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
                     }
                 }
-                if(session.modulo=="adm") {
+                if(session.modulo == "adm") {
                     if(session.tpin=="ext"){
                         if(flow.tipo!="FE")
                             flow.sql="select encucdgo as cod from encu where "+flow.condicion+" and tpencdgo='${flow.tipo}' and admnbnfi='${session.adm[0]}' order by encucdgo asc"
@@ -110,32 +110,32 @@ class EncuestasController {
                     }
 
                 }
-                if(session.modulo=="ins") {
+                if(session.modulo == "ins") {
                     flow.sql="select encucdgo as cod from encu where "+flow.condicion+" and tpencdgo='${flow.tipo}'  order by encucdgo asc"
                 }
-                //println "sql ss!! este "+flow.sql
+                println "sql ss!! este "+flow.sql
                 cn.getDb().eachRow(flow.sql) { d ->
-                    flow.encucdgo=d.cod
+                    flow.encucdgo = d.cod
                 }
 
                 println "encu encontro  "+ flow.encucdgo
-                if(flow.encucdgo!=0){
+                if(flow.encucdgo != 0){
                     //flow.sql="select count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.encucdgo=${flow.encucdgo}"
-                    flow.sql="select first 1 prte.PRTENMRO as  co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO order by prte.PRTENMRO desc"
-                    //println "num preg "+flow.sql
+                    flow.sql="select first 1 prte.PRTENMRO as co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO order by prte.PRTENMRO desc"
+                    println "num preg "+flow.sql
                     def num=0
                     cn.getDb().eachRow(flow.sql) { d ->
                         num=d.co
                     }
-                    //println "num tipo encu"+num
-                    if(flow.max<=num){
-                        flow.encucdgo=0
-                        if(session.modulo=="ins" || session.esPar )
-                            return salir()
+                    println "num tipo encu:" + num
+                    if(flow.max <= num) {
+                        //flow.encucdgo=0
+                        //if(session.modulo == "ins" || session.esPar || session.esDirectivo )
+                        return salir()
                     }
                 }
                 //println "encucdgo comen "+flow.encucdgo
-                if(flow.encucdgo==0){
+                if(flow.encucdgo == 0) {
                     flow.sql="select Gen_id(encu,1) as codigo  from dual;"
                     cn.getDb().eachRow(flow.sql) { d ->
                         flow.encucdgo=d.codigo
@@ -182,7 +182,7 @@ class EncuestasController {
                     flow.inicio=1
                 }
                 else{
-                    flow.sql="select count(*) as actual from  dtec where encucdgo=${flow.encucdgo}"
+                    flow.sql="select count(*) as actual from  dtec where encucdgo = ${flow.encucdgo}"
                     // println "sql cpunt "+flow.sql
                     cn.getDb().eachRow(flow.sql) { d ->
                         //println "each "+d
@@ -472,7 +472,7 @@ class EncuestasController {
                 else
                     flow.anterior=false
                 // println " resp "+flow.resp
-                println " actual "+flow.actual+" inicio "+flow.inicio+"  start  "+flow.start
+//                println " actual "+flow.actual+" inicio "+flow.inicio+"  start  "+flow.start
                 flow.start=false
                 flow.items=[]
                 flow.rp=[]
@@ -530,7 +530,7 @@ class EncuestasController {
             on ("success").to "redirect"
             on("salir"){
 
-                if(session.tipoPersona=="P")
+                if(session.tipoPersona == "P")
                     flow.mensaje="usted ya realizo su autoevaluación"
 
             }.to "confirmar"
@@ -554,6 +554,7 @@ class EncuestasController {
         def sql ="update encu set encuetdo='C' where encucdgo='${encu}' and encuetdo is null"
         println "sql "+sql
         cn.getDb().execute(sql.toString())
+        cn.disconnect();
         return
     }
 
@@ -574,7 +575,7 @@ class EncuestasController {
         }
         tx+=' </div>'
         render(tx)
-
+        cn.disconnect();
     }
 
     def verifica(sql,cn){
@@ -624,6 +625,7 @@ class EncuestasController {
                 return sql
             }
         }
+        cn.disconnect();
     }
 
 

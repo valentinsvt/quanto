@@ -50,9 +50,9 @@
           </table>
           </div>
 
-          <g:link controller="inicio" action="registro" event="eliminar" class="btn"> Eliminar la Materia&nbsp;&nbsp;&nbsp;</g:link>
+          %{--<g:link controller="inicio" action="registro" event="eliminar" class="btn"> Eliminar la Materia&nbsp;&nbsp;&nbsp;</g:link>--}%
           </g:if>
-          <g:link controller="inicio" action="registro" event="registrar" class="btn"> Registrar Otras Materias &nbsp;&nbsp;&nbsp;</g:link>
+          %{--<g:link controller="inicio" action="registro" event="registrar" class="btn"> Registrar Otras Materias &nbsp;&nbsp;&nbsp;</g:link>--}%
           <input id="empEncu" type="button" class="botones2 btn" value="Realizar la Encuesta" >
         </g:form>
       </div>

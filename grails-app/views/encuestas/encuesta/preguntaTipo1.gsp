@@ -21,9 +21,9 @@
         ${pregunta}
     </div>
     <g:form action="encuesta" controller="encuestas" event="siguiente" class="formEncuestas">
-        <div class=" filaEntera ui-corner-all borde" >
+        <div class=" filaRespuestas ui-corner-all borde" >
             <g:each in="${rp}" var="respuesta" status="i">
-                <div style="margin-right: 5px;height: 20px;background-color: #ddd; margin-bottom: 2px;cursor:pointer;" class="respRadio" id="${i}">
+                <div style="margin-right: 5px;height: 20px;background-color: #ddd; margin-bottom: 4px;cursor:pointer;" class="respRadio" id="${i}">
                     <div style="float: left; padding-top: 1px;margin-left: 10px;"><input  id="rr_${i}" style="cursor: pointer" type="radio" value="${respuesta[0]}"  name="respuestas"  class="fg-buttonset-single radio rr" ${(respuesta[0]==resp[pregcdgo])? 'checked':' '} ></div>
                     <div style="padding-top: 1px; float: left;margin-left: 10px; ">${respuesta[1]}</div>
                 </div>
@@ -38,6 +38,7 @@
         </div>
         <div class="abort"><g:link controller="encuestas" action="encuesta" event="abortar" class="btn">Abortar</g:link></div>
         %{--<div class="save"><g:link controller="encuestas" action="encuesta" event="guardar" class="btn">Guardar</g:link></div>--}%
+        %{--<div class="next"> <a href="#" id="siguiente" class="btn">Siguiente</a></div>--}%
         <div class="next"> <a href="#" id="siguiente" class="btn">Siguiente</a></div>
     </div>
 </div>

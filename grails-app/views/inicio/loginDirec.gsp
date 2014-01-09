@@ -37,7 +37,7 @@
             <div class="texto">
                 <ul>
                     <br>
-                    <li>Aplicación de encuestas para el personal Administrativo @c cambiar esto por pares </li>
+                    <li>Evaluación de Docentes por los Directivos</li>
                     <br>
                     <li>Identifíquese para registrar la encuesta.</li>
                 </ul>
