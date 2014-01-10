@@ -38,7 +38,7 @@ class EncuestasController {
                 flow.connected = cn.connect(flow.db.url, flow.db.driver, flow.db.user, flow.db.pass)
                 flow.cedula=session.cedula
                 flow.tipo=session.tipo
-                flow.fecha=new Date().format("MM/dd/yyyy hh:mm:ss")
+                flow.fecha = new Date().format("MM/dd/yyyy hh:mm:ss")
                 if(!session.esAdmin)
                     flow.condicion=" encu.prsncdla='${flow.cedula}' "
                 else{

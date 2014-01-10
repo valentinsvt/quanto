@@ -282,6 +282,7 @@ class InicioController {
                 cn.getDb().eachRow(flow.sql) { d ->
                     session.tipo=d.tpencdgo
                 }
+                cn.disconnect()
                 if(session.tipo=="X"){
                     flow.mensaje="No existe una encuesta definida para su cargo, por favor comuniquese con el administrador del sistema."
                     return error()
@@ -377,7 +378,7 @@ class InicioController {
                     numEncu=d.co
                 }
                 //println "num encu "+maxprsn+"   "+numEncu
-                if(maxprsn>=numEncu){
+                if(maxprsn >= numEncu) {
                     if(!flow.esAdmin){
                         flow.sql="select tpencdgo from tecg where tpprcdgo='${flow.persona[1]}'";
 
@@ -388,14 +389,12 @@ class InicioController {
                     cn.getDb().eachRow(flow.sql) { d ->
                         session.tipo=d.tpencdgo.trim()
                     }
-                    cn.disconnect();
-                }
-                else{
-                    cn.disconnect();
+                } else {
                     session.tipo="X"
                     flow.mensaje="Usted ya ha realizado el numero maximo de encuestas"
                     return error()
                 }
+                cn.disconnect();
                 //println "TIPO "+session.tipo
                 return success()
             }
@@ -493,6 +492,7 @@ class InicioController {
 
                 flow.admn=incompletos+resto
                 /*--------------------------------------------------------------------------------------------------*/
+                cn.disconnect();
 
                 return success()
             }
@@ -552,6 +552,7 @@ class InicioController {
                 else{
                     session.tipo="FE"
                 }
+                cn.disconnect();
                 //println "TIPO "+session.tipo
                 return success()
             }
@@ -873,6 +874,7 @@ class InicioController {
                     band=true
             }
         }
+        cn.disconnect();
         return m
     }
 
@@ -1239,14 +1241,16 @@ class InicioController {
         cn.connect(db.url, db.driver, db.user, db.pass)
         def sql="select count(*) as co from encu where admncdla = '${cdla}' and admnbnfi='${cdla}'"
         println "sql "+sql
+        def contador = 0
         cn.getDb().eachRow(sql) { d ->
-            println "d.co "+d.co*1+" "
-            if(d.co.toInteger()>0)
-                return false
-            else
-                return true
+            //println "d.co " + d.co*1 + " "
+            contador = d.co
         }
-
+        cn.disconnect();
+        if(contador.toInteger() > 0)
+            return false
+        else
+            return true
     }
 
     def IE={
@@ -1382,6 +1386,7 @@ class InicioController {
         cn.getDb().eachRow(sql.toString()) { d ->
             res=d["esclcdgo"]
         }
+        cn.disconnect()
         return res
     }
 

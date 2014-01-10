@@ -36,7 +36,7 @@
 
         </div>
         <div class=" filaEntera ui-corner-all barra"  >
-            Asignatura : <input type="text" disabled id="matVal"> <input id="buscar" type="button" value="Buscar" class="tbbtn fg-button fondo ui-corner-all"><input type="hidden" name="materia" id="materia" value="${resp[pregcdgo]?.get(1)}">
+            Asignatura : <input type="text" disabled id="matVal" style="color: #000" > <input id="buscar" type="button" value="Buscar" class="tbbtn fg-button fondo ui-corner-all"><input type="hidden" name="materia" id="materia" value="${resp[pregcdgo]?.get(1)}">
         </div>
     </g:form>
     <div class="filaBotones">
