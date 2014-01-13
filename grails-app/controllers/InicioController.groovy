@@ -93,7 +93,7 @@ class InicioController {
     def loginPares={
 
         if (request.method == "POST") {
-            println "login pares "+params
+            //println "login pares "+params
             session.setAttribute("cedula",  params.cdla)
             session.setAttribute("modulo",  "prof")
             db.setDB("prof")
@@ -118,7 +118,7 @@ class InicioController {
     }
 
     def prepEncuestaPares={
-        println "prepEncuestaPares "+params
+        //println "prepEncuestaPares "+params
         session.evaluado=params.cedula
         session.materia=params.materia
         session.curso=params.curso
@@ -133,7 +133,7 @@ class InicioController {
 
     def loginDirec ={
         if (request.method == "POST") {
-            println "login direct "+params
+            //println "login direct "+params
             session.setAttribute("cedula",  params.cdla)
             session.setAttribute("modulo",  "prof")
             db.setDB("prof")
@@ -158,7 +158,7 @@ class InicioController {
     }
 
     def pantallaDeEspera = {
-        println session
+        //println session
         db.setDB(session.modulo)
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
@@ -178,7 +178,7 @@ class InicioController {
     }
 
     def abrir={
-        println " session abrir " + session.cedula + " " + session.modulo + "  " + session.tpin + session.tipoPersona
+        //println " session abrir " + session.cedula + " " + session.modulo + "  " + session.tpin + session.tipoPersona
         if(session.modulo == "prof") {
             if(session.tipoPersona == "P") { redirect(controller: "encuestas", action: "encuesta") }
             if(session.tipoPersona == "Par") { redirect(controller: "encuestas", action: "encuesta") }
@@ -592,7 +592,8 @@ class InicioController {
                     flow.tipo = tipoEncuesta(session.cedula, session.tipoPersona)
                 else
                     flow.tipo = session.tipo
-                println "tipo inicio " + flow.tipo
+//                println "tipo inicio " + flow.tipo
+                //println "datos "+flow.datos
                 if(hay == 0) {
                     //println "-------------------- No hay materias"
                     flow.titl = "Registre las materias en las cuales se halla Matriculado"
@@ -603,15 +604,13 @@ class InicioController {
                     flow.lista = datos
                     //println " LISTA         -------------- \n"+flow.datos
                     if(flow.tipo == "DC")
-                        flow.datos = materiasFinal()
-
-
+                        flow.datos = materiasFinal(flow.datos)
                 }
 
                 return success()
             }
             on("success"){
-                println "succes "
+                // println "succes "
             }.to "matriculado"
 
         }
@@ -776,7 +775,7 @@ class InicioController {
 
     }
 
-    List materiasFinal(){
+    List materiasFinal(datos){
         def m=[]
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
@@ -790,92 +789,31 @@ class InicioController {
         cn.getDb().eachRow(sql) { d ->
             max = d.maxpreg
         }
-        sql="select encu.encucdgo, encu.matecdgo, encu.profcedl, encu.dctaprll, encu.crsocdgo, count(*) as co" +
-                " from dtec, encu " +
-                "where encu.encucdgo = dtec.encucdgo and encu.estdcdgo = '${session.cedula}' and " +
-                "encu.tpencdgo = 'DC' group by encucdgo, matecdgo, profcedl, dctaprll, crsocdgo"
-        println " primer  \n"+sql
-        cn.getDb().eachRow(sql) { d ->
-            //println "detalles encu "+d
-            if(d.co < max){
-                def cdgo = "${d.profcedl.toString().trim()}:" +
-                        "${d.matecdgo.toString().trim()}:" +
-                        "${d.crsocdgo.toString().trim()}:" +
-                        "${d.dctaprll.toString().trim()}"
-                temp.add([cdgo, d.matecdgo, d.profcedl, d.dctaprll, d.crsocdgo, d.co])
-            }
-            else{
-                def cdgo = "${d.profcedl.toString().trim()}:" +
-                        "${d.matecdgo.toString().trim()}:" +
-                        "${d.crsocdgo.toString().trim()}:" +
-                        "${d.dctaprll.toString().trim()}"
-                ex.add([cdgo, d.matecdgo, d.profcedl, d.dctaprll, d.crsocdgo, d.co])
-            }
-        }
-        println "TEMP \n" + temp
-        temp.each{
-            sql = "select matr.matecdgo, matedscr, profnmbr||' '||profapll prof," +
-                    "crsodscr, matr.dctaprll, matr.profcedl, matr.crsocdgo from matr, crso, mate, prof " +
-                    "where matr.estdcdgo = '${session.cedula}' and prof.profcedl = matr.profcedl and " +
-                    "mate.matecdgo = matr.matecdgo and crso.crsocdgo = matr.crsocdgo "+
-//                    " and matr.matecdgo='${it[0]}' and prof.profcedl='${it[1]}' and crso.crsocdgo='${it[3]}' and  matr.dctaprll='${it[2]}'"
-                    " and matr.matecdgo='${it[1]}' and prof.profcedl='${it[2]}' and crso.crsocdgo='${it[4]}' and  matr.dctaprll='${it[3]}'"
-            println "SQL TEMP _____________ \n "+sql
-            cn.getDb().eachRow(sql) { d ->
-                def cdgo = "${d.profcedl?.toString().trim()}:" +
-                        "${d.matecdgo?.toString().trim()}:" +
-                        "${d.crsocdgo?.toString().trim()}:" +
-                        "${d.dctaprll?.toString().trim()}"
-                m.add( [cdgo] + [d.matedscr] + [d.prof] + [d.crsodscr] + [d.dctaprll]+[1])
-            }
-
-        }
-        println " size m "+m.size()+" "+m
-        if(m.size()>0)
-            incompletas=0
-        sql="select first 100 matr.matecdgo, matedscr, profnmbr||' - '||profapll prof," +
-                "crsodscr, matr.dctaprll, matr.profcedl, matr.crsocdgo from matr, crso, mate, prof " +
-                "where matr.estdcdgo = '${session.cedula}' and prof.profcedl = matr.profcedl and " +
-                "mate.matecdgo = matr.matecdgo and crso.crsocdgo = matr.crsocdgo  and matr.profcedl not in " +
-                "(select profcedl from encu where estdcdgo = '${session.cedula}' and profcedl is not null)" +
+        def res=[]
+        sql="select matr.matecdgo, matedscr, profnmbr||' - '||profapll prof," +
+                "crso.crsocdgo, matr.dctaprll, prof.profcedl from matr, crso, mate, prof, encu " +
+                "where encu.ESTDCDGO = '${session.cedula}' and prof.profcedl = matr.profcedl and " +
+                "mate.matecdgo = matr.matecdgo and crso.crsocdgo = matr.crsocdgo  and matr.matecdgo=encu.matecdgo and encu.encuetdo='C' "+
                 "order by matedscr, crsodscr"
-        //println "SQL M size  _____________ \n "+sql
+       // println "SQL M size  _____________ \n "+sql
         cn.getDb().eachRow(sql) { d ->
             def cdgo = "${d.profcedl.toString().trim()}:" +
                     "${d.matecdgo.toString().trim()}:" +
                     "${d.crsocdgo.toString().trim()}:" +
                     "${d.dctaprll.toString().trim()}"
-            if(ex.size()>0){
-                ex.each{
-                    if(it[0]==cdgo ){
-                        band=false
-                    }
-                }
-                if(band)
-                    m.each{e->
-                        if(e[0]==cdgo){
-                            band=false
-                        }
-                    }
-                if(band)
-                    m.add( [cdgo,d.matedscr,d.prof,d.crsodscr,d.dctaprll,incompletas])
-                else
-                    band=true
-            }
-            else{
-                m.each{
-                    if(it[0]==cdgo ){
-                        band=false
-                    }
-                }
-                if(band)
-                    m.add( [cdgo,d.matedscr,d.prof,d.crsodscr,d.dctaprll,incompletas])
-                else
-                    band=true
-            }
+           for(int i =datos.size()-1;i>-1;i--){
+               if(datos[i][0]?.trim()==cdgo.trim()){
+                   datos.remove(i)
+               }
+           }
+           // m.add( [cdgo,d.matedscr,d.prof,d.crsodscr,d.dctaprll,incompletas])
+
         }
+
         cn.disconnect();
-        return m
+       // println "datos final  "+datos
+        return datos
+
     }
 
 
@@ -907,7 +845,7 @@ class InicioController {
         cn.connect(db.url, db.driver, db.user, db.pass)
         def tx = "insert into estd(estdcdgo) values ('${cdla}')"
         def rg = 0;
-        println "inserta estudiante" + tx
+        //println "inserta estudiante" + tx
         try {
             cn.getDb().execute(tx)
             rg = 1
@@ -958,7 +896,7 @@ class InicioController {
         def cdgo = ""
         def dd = []
         def i = 0
-        println "armaDatosMatr: .." + txSQL
+        //println "armaDatosMatr: .." + txSQL
         db.setDB("prof")
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
@@ -1162,25 +1100,25 @@ class InicioController {
     }
 
     List cargarDependencias(){
-        println "modulo "+session.modulo
+        //println "modulo "+session.modulo
         db.setDB(session.modulo)
-        println " url cargar "+db.url
+       // println " url cargar "+db.url
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
         def sql="select dpndcdgo, dpnddscr from dpnd where dpndextr = 'S'"
-        println "sql "+sql
+        //println "sql "+sql
         def lista=[]
         cn.getDb().eachRow(sql) { d ->
             lista.add([d.dpndcdgo.trim(),d.dpnddscr.trim()])
         }
-        println "lista "+lista
+        //println "lista "+lista
         cn.disconnect()
         return lista
     }
 
     boolean existePersona(cdla){
         db.setDB(session.modulo)
-        println " url cargar "+db.url
+        //println " url cargar "+db.url
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
         def sql="select prsncdla, tpprcdgo, dpndcdgo, prsnnmbr, prsnapll from prsn where prsncdla = '${cdla}'"
@@ -1240,7 +1178,7 @@ class InicioController {
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
         def sql="select count(*) as co from encu where admncdla = '${cdla}' and admnbnfi='${cdla}'"
-        println "sql "+sql
+        //println "sql "+sql
         def contador = 0
         cn.getDb().eachRow(sql) { d ->
             //println "d.co " + d.co*1 + " "
@@ -1349,7 +1287,7 @@ class InicioController {
         // sql+=" and p.profcedl not in (select profcedl from encu where prof_par = '${cedula}' and encuetdo ='C')"
         sql+=" group by 1,2,3,4,5,6,7,8 order by 3;"
 */
-        println "sql Dir: "+sql
+        //println "sql Dir: "+sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
 /*
@@ -1381,7 +1319,7 @@ class InicioController {
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
         def sql ="select esclcdgo from prof where profcedl = '${cedula}' and profeval = '${tipo}'"
-        println "sql login "+sql
+        //println "sql login "+sql
         def res=null
         cn.getDb().eachRow(sql.toString()) { d ->
             res=d["esclcdgo"]

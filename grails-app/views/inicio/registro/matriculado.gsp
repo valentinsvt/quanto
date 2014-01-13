@@ -39,7 +39,7 @@
             <g:each in="${datos}" status="i" var="d">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><input type="checkbox" name="cdgo" class="ndm"
-                           value="${d[0].encodeAsHTML()} " ${(d[5]!=1)? 'DISABLED': ' '}></td>
+                           value="${d[0].encodeAsHTML()} " ></td>
                 <td>${d[1]?.encodeAsHTML()}</td>
                 <td>${d[2]?.encodeAsHTML()}</td>
                 <td>${d[3]?.encodeAsHTML()}</td>
