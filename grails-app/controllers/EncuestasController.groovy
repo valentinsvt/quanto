@@ -41,13 +41,13 @@ class EncuestasController {
                 flow.fecha = new Date().format("MM/dd/yyyy hh:mm:ss")
                 if(!session.esAdmin)
                     flow.condicion=" encu.prsncdla='${flow.cedula}' "
-                else{
+                else {
                     if(!session.esPar)
                         if(session.esDirectivo)
                             flow.condicion=" encu.PROFDRTV='${flow.cedula}' "
                         else
                             flow.condicion=" encu.admncdla='${flow.cedula}' "
-                    else{
+                    else {
                         flow.condicion=" encu.prof_par='${flow.cedula}' "
                     }
                 }
@@ -101,7 +101,7 @@ class EncuestasController {
                 }
                 if(session.modulo == "adm") {
                     if(session.tpin=="ext"){
-                        if(flow.tipo!="FE")
+                        if(flow.tipo != "FE")
                             flow.sql="select encucdgo as cod from encu where "+flow.condicion+" and tpencdgo='${flow.tipo}' and admnbnfi='${session.adm[0]}' order by encucdgo asc"
                         else
                             flow.sql="select encucdgo as cod from encu where "+flow.condicion+" and tpencdgo ='FE' order by encucdgo asc"
@@ -111,14 +111,14 @@ class EncuestasController {
 
                 }
                 if(session.modulo == "ins") {
-                    flow.sql="select encucdgo as cod from encu where "+flow.condicion+" and tpencdgo='${flow.tipo}'  order by encucdgo asc"
+                    flow.sql="select encucdgo as cod from encu where " + flow.condicion + " and tpencdgo = '${flow.tipo}' order by encucdgo asc"
                 }
                 println "sql ss!! este "+flow.sql
                 cn.getDb().eachRow(flow.sql) { d ->
                     flow.encucdgo = d.cod
                 }
 
-                println "encu encontro  "+ flow.encucdgo
+                println "encu encontro ...... "+ flow.encucdgo
                 if(flow.encucdgo != 0){
                     //flow.sql="select count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.encucdgo=${flow.encucdgo}"
                     flow.sql="select first 1 prte.PRTENMRO as co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO order by prte.PRTENMRO desc"

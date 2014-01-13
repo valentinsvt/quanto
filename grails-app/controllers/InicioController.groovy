@@ -591,8 +591,8 @@ class InicioController {
                 if(!session.esPar)
                     flow.tipo = tipoEncuesta(session.cedula, session.tipoPersona)
                 else
-                    flow.tipo=session.tipo
-                //println "tipo inicio "+flow.tipo
+                    flow.tipo = session.tipo
+                println "tipo inicio " + flow.tipo
                 if(hay == 0) {
                     //println "-------------------- No hay materias"
                     flow.titl = "Registre las materias en las cuales se halla Matriculado"
@@ -602,8 +602,8 @@ class InicioController {
                     flow.titl = "Materias en las cuales se halla matriculado"
                     flow.lista = datos
                     //println " LISTA         -------------- \n"+flow.datos
-                    if(flow.tipo=="DC")
-                        flow.datos=materiasFinal()
+                    if(flow.tipo == "DC")
+                        flow.datos = materiasFinal()
 
 
                 }
@@ -794,7 +794,7 @@ class InicioController {
                 " from dtec, encu " +
                 "where encu.encucdgo = dtec.encucdgo and encu.estdcdgo = '${session.cedula}' and " +
                 "encu.tpencdgo = 'DC' group by encucdgo, matecdgo, profcedl, dctaprll, crsocdgo"
-        //println " primer  \n"+sql
+        println " primer  \n"+sql
         cn.getDb().eachRow(sql) { d ->
             //println "detalles encu "+d
             if(d.co < max){
@@ -812,7 +812,7 @@ class InicioController {
                 ex.add([cdgo, d.matecdgo, d.profcedl, d.dctaprll, d.crsocdgo, d.co])
             }
         }
-        //println "TEMP \n"+ex
+        println "TEMP \n" + temp
         temp.each{
             sql = "select matr.matecdgo, matedscr, profnmbr||' '||profapll prof," +
                     "crsodscr, matr.dctaprll, matr.profcedl, matr.crsocdgo from matr, crso, mate, prof " +
@@ -820,7 +820,7 @@ class InicioController {
                     "mate.matecdgo = matr.matecdgo and crso.crsocdgo = matr.crsocdgo "+
 //                    " and matr.matecdgo='${it[0]}' and prof.profcedl='${it[1]}' and crso.crsocdgo='${it[3]}' and  matr.dctaprll='${it[2]}'"
                     " and matr.matecdgo='${it[1]}' and prof.profcedl='${it[2]}' and crso.crsocdgo='${it[4]}' and  matr.dctaprll='${it[3]}'"
-//            println "SQL TEMP _____________ \n "+sql
+            println "SQL TEMP _____________ \n "+sql
             cn.getDb().eachRow(sql) { d ->
                 def cdgo = "${d.profcedl?.toString().trim()}:" +
                         "${d.matecdgo?.toString().trim()}:" +
@@ -830,7 +830,7 @@ class InicioController {
             }
 
         }
-        //println " size m "+m.size()+" "+m
+        println " size m "+m.size()+" "+m
         if(m.size()>0)
             incompletas=0
         sql="select first 100 matr.matecdgo, matedscr, profnmbr||' - '||profapll prof," +
@@ -958,7 +958,7 @@ class InicioController {
         def cdgo = ""
         def dd = []
         def i = 0
-        println "armaDatosMatr: " + txSQL
+        println "armaDatosMatr: .." + txSQL
         db.setDB("prof")
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)

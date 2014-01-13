@@ -36,7 +36,12 @@
                 <g:link controller="encuestas" action="encuesta" event="anterior" class="btn">Anterior</g:link>
             </g:if>
         </div>
-        <div class="abort"><g:link controller="encuestas" action="encuesta" event="abortar" class="btn">Abortar</g:link></div>
+        <g:if test="${(actual > 1)}">
+            <div class="abort"><g:link controller="encuestas" action="encuesta" event="abortar" class="btn">Abortar</g:link></div>
+
+        </g:if>
+
+
         %{--<div class="save"><g:link controller="encuestas" action="encuesta" event="guardar" class="btn">Guardar</g:link></div>--}%
         %{--<div class="next"> <a href="#" id="siguiente" class="btn">Siguiente</a></div>--}%
         <div class="next"> <a href="#" id="siguiente" class="btn">Siguiente</a></div>
