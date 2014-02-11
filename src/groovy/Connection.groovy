@@ -46,6 +46,7 @@ abstract class Connection {
             } catch(Exception ex) {
                 bresult= "ERROR: execSql(String) cannot execute ''" + strSql + "'   "
                 bresult+= ex.message
+                println "error exec "+bresult+"  --->> "+ex.message
             }
             return bresult
         }
@@ -61,6 +62,7 @@ abstract class Connection {
             } catch(Exception ex) {
                 bresult= "ERROR: execSql(String) cannot execute ''" + strSql + "'   "
                 bresult+= ex.message
+                println "error exec "+bresult+"  --->> "+ex.message
             }
             return bresult
         }

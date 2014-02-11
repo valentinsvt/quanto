@@ -47,7 +47,11 @@ class InicioController {
                 if((existeEstudiante(session.cedula)) == false) {
                     creaEstudiante(session.cedula)      // crea el estudiante
                     redirect(action:"registro")
-                } else redirect(action:"pantallaDeEspera")
+                    return
+                } else{
+                    redirect(action:"pantallaDeEspera")
+                    return
+                }
             }
         }
     }
