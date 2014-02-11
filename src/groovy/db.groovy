@@ -5,14 +5,19 @@ class db implements Serializable{
     String user
     String pass
 
+    String urlDoc = 'jdbc:firebirdsql:172.20.4.6/3050:/db/encu.gdb'  /*  UPEC*/
+    String urlAdm = 'jdbc:firebirdsql:172.20.4.6/3050:/db/admn.gdb'  /*  UPEC*/
+
 //    String urlDoc = 'jdbc:firebirdsql:127.0.0.1/3050:/db/encu.gdb'
-    String urlDoc = 'jdbc:firebirdsql:10.0.0.1/3050:/db/encu.gdb'
+//    String urlAdm = 'jdbc:firebirdsql:127.0.0.1/3050:/db/admn.gdb'
+
+//    String urlDoc = 'jdbc:firebirdsql:10.0.0.1/3050:/db/encu.gdb'
+//    String urlAdm = 'jdbc:firebirdsql:10.0.0.1/3050:/db/admn.gdb'
+
     String driverDoc= 'org.firebirdsql.jdbc.FBDriver'
     String userDoc= 'sysdba'
     String passDoc='admin'
 
-//    String urlAdm = 'jdbc:firebirdsql:127.0.0.1/3050:/db/admn.gdb'
-    String urlAdm = 'jdbc:firebirdsql:172.20.4.6/3050:/db/admn.gdb'
     String driverAdm= 'org.firebirdsql.jdbc.FBDriver'
     String userAdm= 'sysdba'
     String passAdm='admin'

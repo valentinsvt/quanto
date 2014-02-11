@@ -166,9 +166,10 @@ class InicioController {
         def sql = ""
         if(session.tipoPersona == 'E') sql = "select estdnmbr nmbr, estdapll apll from estd where estdcdgo = '${session.cedula}'"
         if(session.tipoPersona == 'P') sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
-//        if(session.esPar) sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
-//        if(session.esDirectivo) sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
+        if(session.tipoPersona == 'Par') sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
+        if(session.tipoPersona == 'Dir') sql = "select profnmbr nmbr, profapll apll from prof where profcedl = '${session.cedula}'"
 
+        //println "pantallaDeEspera" + sql+ "\n tipoPersona: ${session.tipoPersona}, ${session.esPar}, ${session.esDirectivo}"
         cn.getDb().eachRow(sql.toString()) { d ->
             if(d.nmbr) prsn = d.nmbr + " " + d.apll
         }
