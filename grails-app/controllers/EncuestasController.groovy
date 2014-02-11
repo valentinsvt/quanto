@@ -79,6 +79,7 @@ class EncuestasController {
                 flow.pregcdgo = ""
                 flow.encucdgo = 0
                 /****************************************************************ENCUCDGO****************************************************************************/
+               println session.tipoPersona + '----' + flow.tipo
                 if(session.modulo == "prof") {
                     if(session.tipoPersona != "P")  {
                         if(session.tipoPersona == "Par"){
@@ -99,6 +100,8 @@ class EncuestasController {
                         flow.sql="select encucdgo as cod from encu where profcedl='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
                     }
                 }
+                println flow.sql
+
                 if(session.modulo == "adm") {
                     if(session.tpin=="ext"){
                         if(flow.tipo != "FE")
@@ -477,7 +480,8 @@ class EncuestasController {
                 flow.items=[]
                 flow.rp=[]
                 flow.sql="select pregdscr as des, preg.pregcdgo as cod, pregnmrp as num from preg, prte where preg.pregcdgo = prte.pregcdgo and tpencdgo = '${flow.tipo}' and prtenmro  = ${flow.actual}"
-                //  println " sql  pregunta "+flow.sql
+                println " sql  pregunta "+flow.sql
+
                 cn.getDb().eachRow(flow.sql) { d ->
                     //println "d "+d
                     flow.pregunta=d.des.trim()
