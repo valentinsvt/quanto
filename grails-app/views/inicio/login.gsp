@@ -60,46 +60,46 @@
 <script type="text/javascript" src="${resource(dir:'js/jquery/js',file:'jquery-1.4.2.min.js')}"></script>
 <script type="text/javascript">
 
-    var j$ = jQuery.noConflict();
-    j$(document).ready(function() {
-
-        j$('.error').hide();
-        j$('.submit').click(function(event){
-            var vl = j$('.cedula').val();
-            var ln = vl.length;
-            //alert(vl);
-            if((ln != 10)||(parseInt(vl.substring(9,10)) != cedula(vl))) {
-                j$('.error').show();
-                j$('.cedula').css("border", "1px solid #f00");
-                event.preventDefault();
-            } else {
-                if(parseInt(vl.substring(9,10))==cedula(vl)) {
-
-                } else {
-                    j$('.error').hide();
-                    event.preventDefault();
-                }
-            }
-        });
-    });
-
-    function cedula(ci){
-        var i = 1;
-        var s = 0;
-        var d = 0;
-        while (i<10) {
-            n = parseInt(ci.substring(i-1,i));
-            if(i%2){
-                if((n*2) > 9) { s += n*2 -9;} else { s += n*2}
-            } else {
-                s += n;
-            }
-            //alert("valor de s:" + s + " >> n:" + n);
-            i++;
-        }
-        d = (90 - s) % 10;
-        return d;
-    };
+//    var j$ = jQuery.noConflict();
+//    j$(document).ready(function() {
+//
+//        j$('.error').hide();
+//        j$('.submit').click(function(event){
+//            var vl = j$('.cedula').val();
+//            var ln = vl.length;
+//            //alert(vl);
+//            if((ln != 10)||(parseInt(vl.substring(9,10)) != cedula(vl))) {
+//                j$('.error').show();
+//                j$('.cedula').css("border", "1px solid #f00");
+//                event.preventDefault();
+//            } else {
+//                if(parseInt(vl.substring(9,10))==cedula(vl)) {
+//
+//                } else {
+//                    j$('.error').hide();
+//                    event.preventDefault();
+//                }
+//            }
+//        });
+//    });
+//
+//    function cedula(ci){
+//        var i = 1;
+//        var s = 0;
+//        var d = 0;
+//        while (i<10) {
+//            n = parseInt(ci.substring(i-1,i));
+//            if(i%2){
+//                if((n*2) > 9) { s += n*2 -9;} else { s += n*2}
+//            } else {
+//                s += n;
+//            }
+//            //alert("valor de s:" + s + " >> n:" + n);
+//            i++;
+//        }
+//        d = (90 - s) % 10;
+//        return d;
+//    };
 
 </script>
 
