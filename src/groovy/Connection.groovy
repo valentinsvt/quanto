@@ -1,7 +1,9 @@
 //package finix
 
+//import groovy.sql.Sql
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import groovy.sql.Sql
-
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 abstract class Connection {
     /** * Instancia de la connexión a la BD */
     def db
@@ -28,7 +30,10 @@ abstract class Connection {
                 disconnect();
             }
             setServer(strUrl, strDriver, strUser, strPassword)
-            db = Sql.newInstance(url, user, password, driver)
+//            db = Sql.newInstance(url, user, password, driver)
+            def ds =ApplicationHolder.application.mainContext.dbConnectionService.dataSource
+//            println "conneccion pooleada"
+            db=  new Sql(ds)
             connected = true
         } catch(Exception ex) {
             db = null

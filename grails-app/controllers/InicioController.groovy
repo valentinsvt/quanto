@@ -590,7 +590,7 @@ class InicioController {
 
         inicioReg{
             action{
-                //println "session registro " + session.cedula
+                println "session registro " + session.cedula
                 flow.datosFacultad = armaDatosMatr("select first 100 matr.matecdgo, matedscr, profnmbr||' '||profapll prof," +
                         "crsodscr, matr.dctaprll, matr.profcedl, matr.crsocdgo from matr, crso, mate, prof " +
                         "where matr.estdcdgo = '${session.cedula}' and prof.profcedl = matr.profcedl and " +
@@ -637,14 +637,15 @@ class InicioController {
                 *     auxl.max_prof "DC"
                 * --Profesores: ejecuta una sola vez la autoevaluación "AD"
                 */
+//                println "on encuesta "+flow.tipo
                 def lstamatr=[]
                 /* todo ocultar los botones con la variable flow.tipo */
                 if(flow.tipo=="FE")
                     lstamatr = lstaMaterias(session.cedula)
                 else
                 {
-                    //println "entro a tipo Dc "
-                    //println "params ----------------------------- \n"+params
+//                    println "entro a tipo Dc "
+//                    println "params ----------------------------- \n"+params
                     if(params.cdgo){
                         def p = params.cdgo.split(":")
                         lstamatr.add(p)
@@ -779,7 +780,7 @@ class InicioController {
         }
         encuesta{
             action{
-
+                println "encuesta"
             }
             redirect(controller:"encuestas",action:"encuesta")
         }
@@ -797,7 +798,8 @@ class InicioController {
         def band=true
         def incompletas=1
         sql="select count(*) as maxpreg from prte where tpencdgo = 'DC'"
-        cn.getDb().eachRow(sql) { d ->
+        def db = cn.getDb()
+        db.eachRow(sql) { d ->
             max = d.maxpreg
         }
         def res=[]
@@ -807,7 +809,7 @@ class InicioController {
                 "mate.matecdgo = matr.matecdgo and crso.crsocdgo = matr.crsocdgo  and matr.matecdgo=encu.matecdgo and encu.encuetdo='C' "+
                 "order by matedscr, crsodscr"
        // println "SQL M size  _____________ \n "+sql
-        cn.getDb().eachRow(sql) { d ->
+        db.eachRow(sql) { d ->
             def cdgo = "${d.profcedl.toString().trim()}:" +
                     "${d.matecdgo.toString().trim()}:" +
                     "${d.crsocdgo.toString().trim()}:" +
@@ -1043,15 +1045,15 @@ class InicioController {
         //println "db "+db.url
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
-
+        def db = cn.getDb()
 
         //println "  tx "+tx
         def max
-        cn.getDb().eachRow(tx) { d ->
+        db.eachRow(tx) { d ->
             cnta = d.cnta
         }
         tx="select count(*) as maxpreg from prte where tpencdgo = '${tpe}'"
-        cn.getDb().eachRow(tx) { d ->
+        db.eachRow(tx) { d ->
             max=d.maxpreg
         }
         //println "Aqui=>  "+tpe+" cnta "+cnta+" max "+max  //  0602973109
@@ -1059,13 +1061,13 @@ class InicioController {
             tx="select count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.estdcdgo='${cdla}' and encu.tpencdgo='${tpe}'"
             def num
 
-            cn.getDb().eachRow(tx) { d ->
+            db.eachRow(tx) { d ->
                 num=d.co
             }
 
             if(num==max){
                 tx = "select max_prof from auxl"
-                cn.getDb().eachRow(tx) { d ->
+                db.eachRow(tx) { d ->
                     if(cnta < d.max_prof) tp = "DC"; else tp = "X";
                 }
             }

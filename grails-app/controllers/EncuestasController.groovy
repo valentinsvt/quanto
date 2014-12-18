@@ -51,27 +51,27 @@ class EncuestasController {
                         flow.condicion=" encu.prof_par='${flow.cedula}' "
                     }
                 }
-
+                def db =  cn.getDb()
                 flow.rp=[]
                 flow.mat=[:]
                 flow.listaAdm=[]
                 if(session.modulo=="adm" && flow.tipo=="FE"){
                     flow.sql="select admncdla, admnnmbr,admnapll,crgocdgo from admn where dpndcdgo='${session.persona[2]}'"
                     //println "sql depen "+flow.sql
-                    cn.getDb().eachRow(flow.sql) { d ->
+                    db.eachRow(flow.sql) { d ->
                         flow.listaAdm.add([d.admncdla.trim(),d.admnnmbr.trim()+" "+d.admnapll.trim()+" crgo "+d.crgocdgo])
                     }
                 }
                 if(flow.modulo=="prof"){
                     flow.materias.each{
                         flow.sql="select matedscr as des from mate where matecdgo='${it[1]}'"
-                        cn.getDb().eachRow(flow.sql) { d ->
+                        db.eachRow(flow.sql) { d ->
                             flow.mat.put(it[1],d.des)
                         }
                     }
                 }
                 flow.sql = "select count(*) as maxpreg from prte where tpencdgo = '${flow.tipo}'"
-                cn.getDb().eachRow(flow.sql) { d ->
+                db.eachRow(flow.sql) { d ->
                     flow.max = d.maxpreg
                 }
                 //println "max  pregs " + flow.max
@@ -117,7 +117,7 @@ class EncuestasController {
                     flow.sql="select encucdgo as cod from encu where " + flow.condicion + " and tpencdgo = '${flow.tipo}' order by encucdgo asc"
                 }
                 //  println "sql ss!! este "+flow.sql
-                cn.getDb().eachRow(flow.sql) { d ->
+               db.eachRow(flow.sql) { d ->
                     flow.encucdgo = d.cod
                 }
 
@@ -127,7 +127,7 @@ class EncuestasController {
                     flow.sql="select count(prte.PRTENMRO) as co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO "
                     println "num preg "+flow.sql
                     def num=0
-                    cn.getDb().eachRow(flow.sql) { d ->
+                   db.eachRow(flow.sql) { d ->
                         num=d.co
                     }
                     println "num tipo encu:" + num
@@ -140,7 +140,7 @@ class EncuestasController {
                 //println "encucdgo comen "+flow.encucdgo
                 if(flow.encucdgo == 0) {
                     flow.sql="select Gen_id(encu,1) as codigo  from dual;"
-                    cn.getDb().eachRow(flow.sql) { d ->
+                    db.eachRow(flow.sql) { d ->
                         flow.encucdgo=d.codigo
                     }
 
@@ -187,8 +187,8 @@ class EncuestasController {
                 else{
                     // flow.sql="select count(*) as actual from  dtec where encucdgo = ${flow.encucdgo}"
                     flow.sql="select min(pt.prtenmro) as actual from prte pt where tpencdgo='${flow.tipo}' and PREGCDGO not in (select pregcdgo from dtec where encucdgo=${flow.encucdgo})"
-                    println "sql cpunt "+flow.sql
-                    cn.getDb().eachRow(flow.sql) { d ->
+                   // println "sql cpunt "+flow.sql
+                    db.eachRow(flow.sql) { d ->
                         //println "each "+d
                         flow.actual=d.actual
                         flow.inicio=d.actual
@@ -488,8 +488,8 @@ class EncuestasController {
                 flow.rp=[]
                 flow.sql="select pregdscr as des, preg.pregcdgo as cod, pregnmrp as num from preg, prte where preg.pregcdgo = prte.pregcdgo and tpencdgo = '${flow.tipo}' and prtenmro  = ${flow.actual}"
              //   println " sql  pregunta "+flow.sql
-
-                cn.getDb().eachRow(flow.sql) { d ->
+                def db = cn.getDb()
+                db.eachRow(flow.sql) { d ->
                     //println "d "+d
                     flow.pregunta=d.des.trim()
                     flow.pregcdgo=d.cod.trim()
@@ -498,13 +498,13 @@ class EncuestasController {
                 //println " datos pregunta "+flow.pregunta+ " codigo: "+flow.pregcdgo
                 flow.sql="select respdscr, resp.respcdgo from rppg, resp where pregcdgo = '${flow.pregcdgo}' and resp.respcdgo = rppg.respcdgo "
                 //println "sql  resp "+flow.sql
-                cn.getDb().eachRow(flow.sql) { d ->
+                db.eachRow(flow.sql) { d ->
                     flow.rp.add([d.respcdgo.trim(),d.respdscr.trim()])
                 }
                 //println "respuestas "+flow.rp
                 flow.sql="select PREGCDGO,PRITCDGO,PRITDSCR from prit where pregcdgo='${flow.pregcdgo}' order by PRITCDGO "
                 //println "sql "+flow.sql
-                cn.getDb().eachRow(flow.sql) { d ->
+                db.eachRow(flow.sql) { d ->
                     flow.items.add([d.PREGCDGO.trim(),d.PRITCDGO,d.PRITDSCR])
                 }
                 //println " items--------------\n "+flow.items+ " --------- "+flow.items.size()
