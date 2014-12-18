@@ -40,7 +40,7 @@
                 <legend>Ingrese sus datos personales</legend>
                 <div class="fila der " style="margin-top: 10px;">
                     <label>Cédula de Identidad:</label><input class="cedula" type="text" name="cdla" maxlength="10" size="12">
-                    <br><span class="error">Verifique el número de su cédula de identidad</span>
+                    <br><span class="error" style="display: none">Verifique el número de su cédula de identidad</span>
                 </div>
                 <div class="fila azul der" style="margin-top: 40px;">
                     <input type="radio" name="tipo" value="prof">Soy Docente &nbsp;&nbsp;&nbsp;&nbsp;
