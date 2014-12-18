@@ -125,7 +125,7 @@ class EncuestasController {
                 if(flow.encucdgo != 0){
                     //flow.sql="select count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.encucdgo=${flow.encucdgo}"
                     flow.sql="select count(prte.PRTENMRO) as co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO "
-                    println "num preg "+flow.sql
+//                    println "num preg "+flow.sql
                     def num=0
                    db.eachRow(flow.sql) { d ->
                         num=d.co

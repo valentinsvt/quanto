@@ -590,7 +590,7 @@ class InicioController {
 
         inicioReg{
             action{
-                println "session registro " + session.cedula
+//                println "session registro " + session.cedula
                 flow.datosFacultad = armaDatosMatr("select first 100 matr.matecdgo, matedscr, profnmbr||' '||profapll prof," +
                         "crsodscr, matr.dctaprll, matr.profcedl, matr.crsocdgo from matr, crso, mate, prof " +
                         "where matr.estdcdgo = '${session.cedula}' and prof.profcedl = matr.profcedl and " +
