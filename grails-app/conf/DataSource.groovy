@@ -37,7 +37,8 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:firebirdsql:172.20.4.6/3050:/db/encu.gdb"   /* UPEC*/
+//            url = "jdbc:firebirdsql:172.20.4.6/3050:/db/encu.gdb"   /* UPEC*/
+            url = "jdbc:firebirdsql:127.0.0.1/3050:/db/encu.gdb"   /* UNACH*/
             username = "sysdba"
             password = "admin"
         }

@@ -25,7 +25,7 @@
           <g:if test="${datos?.size()>0}">
           <div class="filaEntera ui-corner-all borde izq min" style="height: 300px;overflow: auto; margin-bottom: 5px; margin-left: -20px;">
           <table>
-            <thead>
+            <thead>                                                                      materias
               <tr>
                 <th><h4>(*)</h4></th>
                 <th><h4>Materia</h4></th>

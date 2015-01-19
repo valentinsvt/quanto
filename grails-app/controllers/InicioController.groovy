@@ -10,8 +10,9 @@ class InicioController {
     def index = { redirect(action:"inicio")}
 
     def inicio={
-        session.cedula=null
-        session.modulo=null
+//        session.cedula=null
+//        session.modulo=null
+        session.invalidate()
     }
 
     /* TODO se puede tambien validar estudiantes en esta instancia--
@@ -168,7 +169,7 @@ class InicioController {
     }
 
     def pantallaDeEspera = {
-        //println session
+//        println session
         db.setDB(session.modulo)
         cn = ConnectionFactory.getConnection('Fire')
         cn.connect(db.url, db.driver, db.user, db.pass)
@@ -184,12 +185,12 @@ class InicioController {
             if(d.nmbr) prsn = d.nmbr + " " + d.apll
         }
         cn.disconnect()
+//        println " session espera.. " + session.cedula + " " + session.modulo + "  " + session.tpin
         [persona: session.tipoPersona, prsn: prsn]
-        //println " session espera " + session.cedula + " " + session.modulo + "  " + session.tpin
     }
 
     def abrir={
-        //println " session abrir " + session.cedula + " " + session.modulo + "  " + session.tpin + session.tipoPersona
+//        println " session abrir " + session.cedula + " " + session.modulo + "  " + session.tpin + session.tipoPersona
         if(session.modulo == "prof") {
             if(session.tipoPersona == "P") { redirect(controller: "encuestas", action: "encuesta") }
             if(session.tipoPersona == "Par") { redirect(controller: "encuestas", action: "encuesta") }
@@ -780,7 +781,7 @@ class InicioController {
         }
         encuesta{
             action{
-                println "encuesta"
+//                println "encuesta"
             }
             redirect(controller:"encuestas",action:"encuesta")
         }
@@ -1217,6 +1218,17 @@ class InicioController {
         cn2.connect(db.url, db.driver, db.user, db.pass)
         def op = []
 
+        /* profesores de la msma escuela de quien evalua */
+        def sql = "select prof.profcedl, prof.profnmbr, prof.profapll, mate.matedscr, crso.crsodscr, prof.esclcdgo, mate.matecdgo, crso.crsocdgo "
+        sql += "from prof, dcta, mate, crso "
+        sql += "where prof.profcedl = dcta.profcedl and dcta.matecdgo = mate.matecdgo and "
+        sql += "dcta.crsocdgo = crso.crsocdgo and prof.profcedl != '${cedula}' and "
+        sql += "prof.esclcdgo = (select esclcdgo from prof where profcedl = '${cedula}') and prof.profcedl not in ("
+        sql += "select profcedl from encu where prof_par = '${cedula}' and encuetdo = 'C' and "
+        sql += "encu.matecdgo = dcta.matecdgo and encu.crsocdgo = dcta.crsocdgo and tpencdgo = 'PR') "
+        sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
+
+/*      // de todas las escuelas
         def sql = "select prof.profcedl, prof.profnmbr, prof.profapll, mate.matedscr, crso.crsodscr, prof.esclcdgo, mate.matecdgo, crso.crsocdgo "
         sql += "from prof, dcta, mate, crso "
         sql += "where prof.profcedl = dcta.profcedl and dcta.matecdgo = mate.matecdgo and "
@@ -1224,6 +1236,7 @@ class InicioController {
         sql += "select profcedl from encu where prof_par = '${cedula}' and encuetdo = 'C' and "
         sql += "encu.matecdgo = dcta.matecdgo and encu.crsocdgo = dcta.crsocdgo and tpencdgo = 'PR') "
         sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
+*/
 
 /*
         def sql = "select p.profcedl, p.profnmbr, p.profapll, m.matedscr, c.crsodscr, p.esclcdgo, m.matecdgo, c.crsocdgo "
@@ -1236,6 +1249,7 @@ class InicioController {
         sql += "group by 1,2,3,4,5,6,7,8 order by 3;"
         println "sqlPar: " + sql
 */
+//        println "sqlPar: " + sql
         def  cont = 0
         cn.getDb().eachRow(sql.toString()) { d ->
 /*

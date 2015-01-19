@@ -79,7 +79,7 @@ class EncuestasController {
                 flow.pregcdgo = ""
                 flow.encucdgo = 0
                 /****************************************************************ENCUCDGO****************************************************************************/
-                println session.tipoPersona + '----' + flow.tipo
+//                println session.tipoPersona + '----' + flow.tipo
                 if(session.modulo == "prof") {
                     if(session.tipoPersona != "P")  {
                         if(session.tipoPersona == "Par"){
@@ -100,7 +100,7 @@ class EncuestasController {
                         flow.sql="select encucdgo as cod from encu where profcedl='${flow.cedula}' and tpencdgo='${flow.tipo}' order by encucdgo asc"
                     }
                 }
-                println flow.sql
+//                println flow.sql
 
                 if(session.modulo == "adm") {
                     if(session.tpin=="ext"){
@@ -121,7 +121,7 @@ class EncuestasController {
                     flow.encucdgo = d.cod
                 }
 
-                println "encu encontro ...... "+ flow.encucdgo
+//                println "encu encontro ...... "+ flow.encucdgo
                 if(flow.encucdgo != 0){
                     //flow.sql="select count(*) as co from dtec,encu where encu.encucdgo=dtec.encucdgo and encu.encucdgo=${flow.encucdgo}"
                     flow.sql="select count(prte.PRTENMRO) as co from dtec , prte where prte.pregcdgo=dtec.pregcdgo and dtec.ENCUCDGO=${flow.encucdgo} and prte.TPENCDGO=DTEC.TPENCDGO "
@@ -130,7 +130,7 @@ class EncuestasController {
                    db.eachRow(flow.sql) { d ->
                         num=d.co
                     }
-                    println "num tipo encu:" + num
+//                    println "num tipo encu:" + num
                     if(flow.max <= num) {
                         //flow.encucdgo=0
                         //if(session.modulo == "ins" || session.esPar || session.esDirectivo )
@@ -179,7 +179,7 @@ class EncuestasController {
                         //println "inst "
                         sqlInsert="insert into encu (encucdgo,${((session.esAdmin)?'admncdla':'prsncdla')},encufcha,tpencdgo,tpprcdgo) values (${flow.encucdgo},'${flow.cedula}','${flow.fecha}','${flow.tipo}'${((session.esAdmin)?",'"+session.persona[6]+"'":",'"+session.persona[1]+"'")})"
                     }
-                    println " sqlinsert encu!!!!! "+sqlInsert
+//                    println " sqlinsert encu!!!!! "+sqlInsert
                     cn.execSql(sqlInsert)
                     flow.actual=1
                     flow.inicio=1
