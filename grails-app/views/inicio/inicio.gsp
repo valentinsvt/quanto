@@ -15,7 +15,7 @@
 <body>
 <div class="contenido ui-widget-content ui-corner-all " style="margin: auto;margin-top: 30px; position: relative">
     <div id="1" class="botones " style="position: absolute; left: 100px; top: 40px; width: 245px; height: 167px;z-index: 1">
-        <g:link action="login"  ><div>Soy Estudiante<img  class="img_1" src="${resource(dir:'images',file:'qencu.jpg')}" style="border: white;" width="245px;" height="167px;" /></div></g:link>
+        <g:link action="login"  ><div>Estudiantes y Autoevaluación Prof.<img  class="img_1" src="${resource(dir:'images',file:'qencu.jpg')}" style="border: white;" width="245px;" height="167px;" /></div></g:link>
     </div>
     <div id="2" class="botones " style="position: absolute; left: 430px; top: 40px; width: 245px; height: 167px;z-index: 2">
         <g:link action="loginAdm" ><div><img class="img_2" src="${resource(dir:'images',file:'qadmn.jpg')}" style="border: white" width="245px;" height="167px;"/></div></g:link>
@@ -34,7 +34,7 @@
     <div class=" span-8  " style="position: absolute;left: 30px; bottom:  10px; text-align: left;  padding: 10px;width: 90%;padding-top: 0px;" >
         <div style="color: #102e70; text-align:left;  font-size:20px; margin: 10px;border-bottom: 1px solid black;border-bottom-color:#102e70;margin-left: 0px;padding-bottom: 3px;">Quanto Web</div>
         Seleccione el módulo sobre el cual desea realizar su encuesta:<br/>
-        <b>Quanto Docentes</b>: Evaluación de los Estudiantes al Profesor<br/>
+        <span style="color: #003785"><b>Quanto Docentes</b>: Evaluación de los Estudiantes al Profesor y Autoevaluación de Profesores<br/></span>
         <b>Quanto Administrativos</b>: Evaluación al personal administrativo<br>
         <b>Quanto Docentes - Pares</b>: Evaluación de los Pares a los Profesores <br/>
         <b>Quanto Docentes - Directivos</b>: Evaluación de los Directivos a los Profesores<br>
