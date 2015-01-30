@@ -68,6 +68,7 @@
 <script type="text/javascript" src="${resource(dir:'js/jquery/js',file:'jquery-1.4.2.min.js')}"></script>
 <script type="text/javascript">
 
+/*
     var j$ = jQuery.noConflict();
     j$(document).ready(function() {
 
@@ -108,6 +109,7 @@
         d = (90 - s) % 10;
         return d;
     };
+*/
 
 </script>
 

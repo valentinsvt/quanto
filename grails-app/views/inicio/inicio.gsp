@@ -41,7 +41,7 @@
         %{--          <b>Quanto Intituciones</b>: Evaluación Institucional.<br>--}%
     </div>
 </div>
-<div class="pie"> Desarrollado por: TEDEIN SA &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="http://www.tedein.com.ec">www.tedein.com.ec</a></div>
+<div class="pie"> Desarrollado por: TEDEIN SA &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="http://www.tedein.com.ec">www.tedein.com.ec</a>&nbsp;&nbsp;Versión ${message(code: 'version', default: '1.1.0x')}</div>
 
 </body>
 </html>
